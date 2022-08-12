@@ -7,7 +7,7 @@
 }
 
 .app-body {
-  flex-grow: 40;
+  height: 100%;
 }
 
 .routerLink {

@@ -1,5 +1,5 @@
 import './App.css';
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import TicTacToe from './components/TicTacToe';
 import UltimateTicTacToe from './components/UltimateTicTacToe';
 import Menu from './components/Menu';
