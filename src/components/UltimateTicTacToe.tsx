@@ -7,7 +7,9 @@ interface IUltimateTicTacToeProps {
 const UltimateTicTacToe: React.FC<IUltimateTicTacToeProps> = (props) => {
 
   return <div className='ultimateTicTacToe app-body'>
-    Ultimate TicTacToe compnent
+    <div className="container">
+      testing
+    </div>
   </div>;
 };
 

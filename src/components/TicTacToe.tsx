@@ -10,7 +10,7 @@ interface ITicTacToeProps {
   mode?: TMode
 }
 
-const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 9, side = 'X', mode = 'hotseat' }) => {
+const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 7, side = 'X', mode = 'hotseat' }) => {
 
   const initBoard = Array(size).fill(Array(size).fill(null))
 
@@ -18,7 +18,12 @@ const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 9, side = 'X', mode = 'ho
     board: initBoard,
     side: side,
     currentlyPlaying: 'X',
-    winner: null
+    winner: null,
+    score: {
+      X: 0,
+      O: 0,
+      draw: 0
+    }
   })
 
 
@@ -49,9 +54,23 @@ const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 9, side = 'X', mode = 'ho
 
   }, [/*socket*/ mode])
   console.log(state.board)
-  return <div className='app-body ticTacToe'>
-      <div>{`winner: ${state.winner}`}</div>
-      <div>{`currently playing: ${state.currentlyPlaying}`}</div>
+  return <div className='ticTacToe'>
+
+    <div className='ticTacToe-Info'>
+      <div>
+        <div>X</div>
+        <div>{state.score.X} wins</div>
+      </div>
+      <div>
+        <div>O</div>
+        <div>{state.score.O} wins</div>
+      </div>
+      <div>
+        <div>weight</div>
+        <div>{state.score.draw} draws</div>
+      </div>
+    </div>
+
     <div className='board'>
       {state.board.map((row: Array<"X" | "O" | null>, x: number) => {
         return <div className="row" key={x}>
@@ -67,6 +86,8 @@ const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 9, side = 'X', mode = 'ho
         </div>
       })}
     </div>
+
+    <div> Mooving: {state.currentlyPlaying}</div>
   </div>
 };
 

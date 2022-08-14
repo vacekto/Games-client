@@ -9,11 +9,13 @@ function App() {
   return (
     <div className="App">
       <NavigationBar />
-      <Routes>
-        <Route path='/' element={<Menu />} />
-        <Route path="/:TicTacToe" element={<TicTacToe />} />
-        <Route path="/UltimateTicTacToe" element={<UltimateTicTacToe />} />
-      </Routes>
+      <div className='app-body'>
+        <Routes>
+          <Route path='/' element={<Menu />} />
+          <Route path="/:TicTacToe" element={<TicTacToe />} />
+          <Route path="/UltimateTicTacToe" element={<UltimateTicTacToe />} />
+        </Routes>
+      </div>
     </div>
   );
 }

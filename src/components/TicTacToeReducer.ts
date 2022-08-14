@@ -6,11 +6,16 @@ export type TTicTacToeState = {
     side: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null
+    score: {
+        X: number
+        O: number
+        draw: number
+    }
 }
 
 type TTicTacToeAction =
     | { type: 'HOT_SEAT_MOVE'; payload: { coordinates: [number, number] } }
-    //| { type: 'SET_SIDE' };
+//| { type: 'SET_SIDE' };
 
 
 const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
@@ -19,11 +24,15 @@ const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
             const [x, y] = action.payload.coordinates
             const board = JSON.parse(JSON.stringify(prevState.board))
             board[x][y] = prevState.currentlyPlaying
+            const isWinner = checkForWinnerTicTacToe(board, [x, y], 5)
+            const scoreUpdate = { ...prevState.score }
+            if (isWinner) scoreUpdate[prevState.currentlyPlaying] += 1
             return {
                 board,
                 side: prevState.side === "X" ? 'O' : 'X' as TGameSide,
                 currentlyPlaying: prevState.side === "X" ? 'O' : 'X' as TGameSide,
-                winner: checkForWinnerTicTacToe(board, [x, y], 5) ? prevState.currentlyPlaying : null
+                winner: isWinner ? prevState.currentlyPlaying : null,
+                score: { ...scoreUpdate }
             }
 
         default:
