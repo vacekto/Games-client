@@ -14,6 +14,9 @@ const Menu: React.FC<IMenuProps> = (props) => {
     <div>
       <Link className='routerLink' to='/UltimateTicTacToe'>UltimateTicTacToe</Link>
     </div>
+    <div>
+    <Link className='routerLink' to='/Options'>Options</Link>
+    </div>
   </div>;
 };
 

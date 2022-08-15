@@ -1,5 +1,5 @@
 import { TTicTacToeBoard, TTicTacToeSide, TGameSide } from 'shared/types'
-import { checkForWinnerTicTacToe } from '../util/gameLogic'
+import { checkForWinnerTicTacToe } from '../../util/gameLogic'
 
 export type TTicTacToeState = {
     board: TTicTacToeBoard

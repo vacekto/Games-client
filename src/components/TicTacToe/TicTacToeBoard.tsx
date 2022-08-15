@@ -1,16 +1,16 @@
-import './TicTacToe.css'
-import { useEffect, useReducer } from 'react'
+import './TicTacToeBoard.css'
+import { useReducer, useEffect } from 'react'
 import { TMode, TGameSide } from 'shared/types'
 import reducer from './TicTacToeReducer'
 
 
-interface ITicTacToeProps {
+interface ITicTacToeBoardProps {
   size?: number
   side?: TGameSide
   mode?: TMode
 }
 
-const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 7, side = 'X', mode = 'hotseat' }) => {
+const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 7, side = 'X', mode = 'hotseat' }) => {
 
   const initBoard = Array(size).fill(Array(size).fill(null))
 
@@ -53,8 +53,8 @@ const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 7, side = 'X', mode = 'ho
     }
 
   }, [/*socket*/ mode])
-  console.log(state.board)
-  return <div className='ticTacToe'>
+
+  return <div className='Board'>
 
     <div className='ticTacToe-Info'>
       <div>
@@ -91,4 +91,4 @@ const TicTacToe: React.FC<ITicTacToeProps> = ({ size = 7, side = 'X', mode = 'ho
   </div>
 };
 
-export default TicTacToe;
+export default TicTacToeBoard;
