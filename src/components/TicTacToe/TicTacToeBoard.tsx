@@ -1,6 +1,7 @@
 import './TicTacToeBoard.css'
 import { useReducer, useEffect } from 'react'
 import { TMode, TGameSide } from 'shared/types'
+import { Link } from 'react-router-dom'
 import reducer from './TicTacToeReducer'
 
 
@@ -31,8 +32,6 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 7, side = 'X', 
     if (state.board[x][y] === null && state.side === state.currentlyPlaying) {
       if (mode === 'multiplayer') {
         //socket.emit('clientGameUpdate', state.board, [x, y])
-
-
       } else {
         dispatch({ type: 'HOT_SEAT_MOVE', payload: { coordinates: [x, y] } })
       }
@@ -54,7 +53,7 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 7, side = 'X', 
 
   }, [/*socket*/ mode])
 
-  return <div className='Board'>
+  return <div className='ticTacToeBoard'>
 
     <div className='ticTacToe-Info'>
       <div>
@@ -71,7 +70,7 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 7, side = 'X', 
       </div>
     </div>
 
-    <div className='board'>
+    <div>
       {state.board.map((row: Array<"X" | "O" | null>, x: number) => {
         return <div className="row" key={x}>
           {row.map((value: "X" | "O" | null, y: number) => {
@@ -88,6 +87,9 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 7, side = 'X', 
     </div>
 
     <div> Mooving: {state.currentlyPlaying}</div>
+    <div className='TicTacToeFooter'>
+      <Link to='/'>Quit</Link>
+    </div>
   </div>
 };
 

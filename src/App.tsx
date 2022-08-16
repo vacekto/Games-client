@@ -6,6 +6,7 @@ import NavigationBar from './components/NavigationBar';
 import TicTacToeOptions from './components/TicTacToe/TicTacToeOptions'
 import TicTacToeBoard from './components/TicTacToe/TicTacToeBoard';
 
+
 function App() {
   return (
     <div className="App">
