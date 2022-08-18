@@ -1,0 +1,24 @@
+.ultimateTicTacToeBoard {
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+}
+
+.displayFlex {
+    display: flex;
+}
+
+.down {
+    display: flex;
+    flex-direction: column;
+}
+
+.square {
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+}
+
+.quadrant{
+    border: 1px solid black;
+}

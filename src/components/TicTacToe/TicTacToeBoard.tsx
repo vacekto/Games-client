@@ -3,6 +3,7 @@ import { useReducer, useEffect } from 'react'
 import { TMode, TGameSide } from 'shared/types'
 import { Link } from 'react-router-dom'
 import reducer from './TicTacToeReducer'
+import { initializeTicTacToeBoard } from '../../util/functions'
 
 
 interface ITicTacToeBoardProps {
@@ -13,10 +14,8 @@ interface ITicTacToeBoardProps {
 
 const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 7, side = 'X', mode = 'hotseat' }) => {
 
-  const initBoard = Array(size).fill(Array(size).fill(null))
-
   const [state, dispatch] = useReducer(reducer, {
-    board: initBoard,
+    board: initializeTicTacToeBoard(size),
     side: side,
     currentlyPlaying: 'X',
     winner: null,
@@ -53,7 +52,7 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 7, side = 'X', 
 
   }, [/*socket*/ mode])
 
-  return <div className='ticTacToeBoard'>
+  return <div className='ticTacToeBoard whole-screan'>
 
     <div className='ticTacToe-Info'>
       <div>

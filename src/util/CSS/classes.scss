@@ -1,0 +1,28 @@
+.board {
+    display: flex;
+
+    div {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.app-body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.whole-screan {
+    background-color: rgb(255, 255, 255);
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}

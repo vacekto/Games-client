@@ -1,5 +1,5 @@
 import './TicTacToeOptions.css'
-import { Link } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import socketInstance from '../../util/socketSingleton'
 
@@ -38,7 +38,8 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
         <button onClick={handleSearchClick}>Quick search</button>
         {searching ? 'searching ...' : null}
         <button onClick={handleInvite}>invite friend</button>
-        <Link to={'/TicTacToe'}>back</Link>
+        <Link to={'/'}>back</Link>
+        <Outlet />
     </div>;
 };
 
