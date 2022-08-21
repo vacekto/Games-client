@@ -1,0 +1,23 @@
+.usernameModal {
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 500px;
+        height: 300px;
+        border: 1px solid black;
+        
+    }
+
+}

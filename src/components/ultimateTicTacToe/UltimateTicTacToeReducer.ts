@@ -1,9 +1,9 @@
-import { TUltimateTicTacToeBoard, TTicTacToeSide, TGameSide } from 'shared/types'
+import { TUltimateTicTacToeBoard, TTicTacToeSide, TTicTacToeBoard } from 'shared/types'
 import { checkForWinnerTicTacToe } from '../../util/gameLogic'
 
-export type TUltimateTicTacToeState = {
-    activeQuadrant: null | [number, number]
-    finishedQuadrants: [number, number][]
+export interface TUltimateTicTacToeState {
+    activeSegment: null | [number, number]
+    segmentBoard: TTicTacToeBoard
     board: TUltimateTicTacToeBoard
     side: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
@@ -16,37 +16,35 @@ export type TUltimateTicTacToeState = {
 }
 
 type TUltimateTicTacToeAction =
-    { type: 'HOT_SEAT_MOVE', payload: { squareCOORD: [number, number], quadrantCOORD: [number, number] } }
-    | { type: 'TEST', payload: { squareCOORD: [number, number], quadrantCOORD: [number, number] } }
+    { type: 'HOT_SEAT_MOVE', payload: { squareCOORD: [number, number], segmentCOORD: [number, number] } }
+    | { type: 'TEST', payload: { squareCOORD: [number, number], segmentCOORD: [number, number] } }
 
 
 const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeAction) => {
     switch (action.type) {
         case 'HOT_SEAT_MOVE':
             const [x, y] = action.payload.squareCOORD
-            const [z, w] = action.payload.quadrantCOORD
+            const [z, w] = action.payload.segmentCOORD
             const update: TUltimateTicTacToeState = JSON.parse(JSON.stringify(prevState))
             update.board[z][w][x][y] = prevState.currentlyPlaying
+            const wonSegment = checkForWinnerTicTacToe(update.board[z][w], [x, y], 3)
+            if (wonSegment) {
+                update.segmentBoard[z][w] = prevState.currentlyPlaying
+                const isWinner = checkForWinnerTicTacToe(update.segmentBoard, [z, w], 3)
+                if (isWinner) {
+                    update.winner = prevState.currentlyPlaying
+                    update.score[prevState.currentlyPlaying] += 1
+                    return update
+                }
+            }
+            if (update.segmentBoard[x][y]) update.activeSegment = null
+            else update.activeSegment = [x, y]
             update.side = prevState.side === 'X' ? 'O' : 'X'
             update.currentlyPlaying = prevState.currentlyPlaying === 'X' ? 'O' : 'X'
-            const wonQuadrant = checkForWinnerTicTacToe(update.board[z][w], [x, y], 3)
-            const isWinner = wonQuadrant && prevState.finishedQuadrants.length === 8 ? true : false
-            if (wonQuadrant) {
-                update.finishedQuadrants.push([z, w])
-                update.activeQuadrant = null
-            }
-            else {
-                const isFinished = prevState.finishedQuadrants.find(quadrant => quadrant[0] === (2 - z) && quadrant[1] === (2 - w))
-                update.activeQuadrant = isFinished ? null : [2 - z, 2 - w]
-            }
-            if (isWinner) {
-                update.winner = prevState.currentlyPlaying
-                update.score[prevState.currentlyPlaying] += 1
-            }
             return update
 
         case 'TEST':
-            console.log('quadrant' + action.payload.quadrantCOORD)
+            console.log('quadrant' + action.payload.segmentCOORD)
             console.log('square' + action.payload.squareCOORD)
             return prevState
 

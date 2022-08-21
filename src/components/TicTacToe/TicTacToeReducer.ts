@@ -1,7 +1,7 @@
 import { TTicTacToeBoard, TTicTacToeSide, TGameSide } from 'shared/types'
 import { checkForWinnerTicTacToe } from '../../util/gameLogic'
 
-export type TTicTacToeState = {
+export interface TTicTacToeState {
     board: TTicTacToeBoard
     side: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
@@ -14,14 +14,14 @@ export type TTicTacToeState = {
 }
 
 type TTicTacToeAction =
-    | { type: 'HOT_SEAT_MOVE'; payload: { coordinates: [number, number] } }
+    | { type: 'HOT_SEAT_MOVE'; payload: { COORD: [number, number] } }
 //| { type: 'SET_SIDE' };
 
 
 const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
     switch (action.type) {
         case 'HOT_SEAT_MOVE':
-            const [x, y] = action.payload.coordinates
+            const [x, y] = action.payload.COORD
             const board = JSON.parse(JSON.stringify(prevState.board))
             board[x][y] = prevState.currentlyPlaying
             const isWinner = checkForWinnerTicTacToe(board, [x, y], 5)

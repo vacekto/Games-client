@@ -1,7 +1,8 @@
-import './TicTacToeOptions.css'
+import './TicTacToeOptions.scss'
 import { Link, Outlet } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import socketInstance from '../../util/socketSingleton'
+import Lobby from '../Lobby'
 
 interface ITicTacToeOptionsProps {
 
@@ -10,10 +11,6 @@ interface ITicTacToeOptionsProps {
 const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
     const [searching, setSearching] = useState<boolean>(false) //search for oponent
     const socket = socketInstance
-
-    const handleInvite = () => {
-
-    }
 
     const handleSearchClick = () => {
         if (searching) socket.emit('CANCEL_SEARCH_FOR_OPPONENT', 'ticTacToe')
@@ -32,13 +29,18 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
         }
     }, [socket])
 
-    return <div className='options'>
-        <Link to={'/TicTacToe/board'}>Hotseat</Link>
-        <button>VS PC</button>
-        <button onClick={handleSearchClick}>Quick search</button>
-        {searching ? 'searching ...' : null}
-        <button onClick={handleInvite}>invite friend</button>
-        <Link to={'/'}>back</Link>
+    return <div className='ticTacToeOptions'>
+        <div className='optionsContainer'>
+            <div className='options'>
+                <button><Link to={'/TicTacToe/board'}>Hotseat</Link></button>
+                <button>VS PC</button>
+                <button onClick={handleSearchClick}>Quick search</button>
+                {searching ? 'searching ...' : null}
+                <button >invite friend</button>
+                <button><Link to={'/'}>back</Link></button>
+            </div>
+        </div>
+        <Lobby />
         <Outlet />
     </div>;
 };

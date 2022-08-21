@@ -1,9 +1,10 @@
 import './UltimateTicTacToeBoard.css'
 import { TTicTacToeBoard } from 'shared/types'
-import { initializeUltimateTicTacToeBoard } from '../../util/functions'
+import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/functions'
 import { useReducer, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import reducer from './UltimateTicTacToeReducer'
+import GameHeader from '../GameHeader'
 
 interface IUltimateTicTacToeBoardProps {
 
@@ -12,8 +13,8 @@ interface IUltimateTicTacToeBoardProps {
 
 const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) => {
     const [state, dispatch] = useReducer(reducer, {
-        activeQuadrant: null,
-        finishedQuadrants: [],
+        activeSegment: null,
+        segmentBoard: initializeTicTacToeBoard(3),
         board: initializeUltimateTicTacToeBoard(),
         side: 'X',
         currentlyPlaying: 'X',
@@ -25,17 +26,21 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
         }
     })
 
-    const handleSquareClick = (x: number, y: number, z: number, w: number) => {
+    const handleSquareClick = (squareCOORD: [number, number], segmentCOORD: [number, number]) => {
+        const [x, y] = squareCOORD
+        const [z, w] = segmentCOORD
+        if (state.board[z][w][x][y]) return
+        if (state.activeSegment &&
+            (state?.activeSegment[0] !== z || state.activeSegment[1] !== w)
+        ) return
         dispatch({
-            type: 'HOT_SEAT_MOVE', payload: {
-                squareCOORD: [x, y],
-                quadrantCOORD: [z, w]
-            }
+            type: 'HOT_SEAT_MOVE',
+            payload: { squareCOORD, segmentCOORD }
         })
     }
 
     useEffect(() => {
-        console.log(state.activeQuadrant)
+        console.log(state.activeSegment)
     }, [state])
 
 
@@ -46,7 +51,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
                     return <div
                         key={y}
                         className='down square'
-                        onClick={() => { handleSquareClick(x, y, z, w) }}
+                        onClick={() => { handleSquareClick([x, y], [z, w]) }}
                     >
                         {value}
                     </div>
@@ -55,20 +60,24 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
         })
     }
 
-    return <div className='ultimateTicTacToeBoard whole-screan'>
-        <div>
-            {state.board.map((quadrantRow, x) => {
-                return <div className='displayFlex' key={x}>
-                    {quadrantRow.map((quadrant, y) => {
-                        return <div className='down quadrant' key={y}>
-                            {renderTicTacToeBoard(quadrant, x, y)}
+    return <div className='ultimateTicTacToeBoard wholeScrean'>
+        <div className='boardContainer'>
+            <GameHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
+            {state.board.map((segmentRow, z) => {
+                return <div className='displayFlex' key={z}>
+                    {segmentRow.map((segment, w) => {
+                        return <div className='down quadrant' style={{ backgroundColor: state.activeSegment && state.activeSegment[0] === z && state.activeSegment[1] === w ? "yellow" : "" }} key={w}>
+                            {renderTicTacToeBoard(segment, z, w)}
                         </div>
                     })}
                 </div>
             })}
-            <Link to='/'>Quit</Link>
+            <div> Mooving: {state.currentlyPlaying}</div>
+            <div className='TicTacToeFooter'>
+                <Link to='/'>Quit</Link>
+            </div>
         </div>
-    </div>;
+    </div >;
 };
 
 export default UltimateTicTacToeBoard;

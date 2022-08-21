@@ -1,10 +1,20 @@
-.board {
-    display: flex;
+.wholeScrean {
+    background-color: rgb(255, 255, 255);
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+}
 
-    div {
-        display: flex;
-        flex-direction: column;
-    }
+.boardContainer {
+    border: 1px solid black;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .app-body {
@@ -15,14 +25,17 @@
     align-items: center;
 }
 
+.optionsContainer {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-.whole-screan {
-    background-color: rgb(255, 255, 255);
-    height: 100vh;
-    width: 100vw;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+.options {
+    border: 1px solid black;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
