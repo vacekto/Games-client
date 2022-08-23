@@ -4,8 +4,8 @@ import { TMode, TGameSide } from 'shared/types'
 import { Link } from 'react-router-dom'
 import { initializeTicTacToeBoard } from '../../util/functions'
 import reducer from './TicTacToeReducer'
-import GameHeader from '../GameHeader'
-
+import BoardHeader from '../BoardHeader'
+import { Circle, Times } from './../../util/SVG'
 
 interface ITicTacToeBoardProps {
   size?: number
@@ -37,6 +37,12 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
     }
   }
 
+  const renderBoardValue = (value: 'X' | 'O' | null) => {
+    if (value === 'X') return <Times />
+    if (value === 'O') return <Circle />
+    return null
+  }
+
   useEffect(() => {
     if (mode === 'multiplayer') {
       /*if (!socket.hasListeners('serverGameUpdate')) {
@@ -53,21 +59,20 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
   }, [/*socket*/ mode])
 
   return <div className='ticTacToeBoard wholeScrean'>
-    <div className="boardContainer">
+    <div className="gameContainer">
 
-
-      <GameHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
+      <BoardHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
 
       <div>
         {state.board.map((row: Array<"X" | "O" | null>, x: number) => {
-          return <div className="row" key={x}>
+          return <div className="ticTacToeRow" key={x}>
             {row.map((value: "X" | "O" | null, y: number) => {
               return <div
                 key={y}
                 className='square'
                 onClick={() => { handleSquareClick(x, y) }}
               >
-                {value}
+                {renderBoardValue(value)}
               </div>
             })}
           </div>

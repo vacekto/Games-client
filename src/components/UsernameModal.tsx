@@ -2,14 +2,13 @@ import { useState } from 'react';
 import './UsernameModal.scss'
 
 interface IUsernameModalProps {
-  style: string
+  style: "flex" | "none"
   exitModal: () => void
   submit: (username: string) => void
 }
 
 const UsernameModal: React.FC<IUsernameModalProps> = (props) => {
   const [usernameValue, setUsernameValue] = useState<string>('')
-
 
 
   return (

@@ -4,28 +4,29 @@
     align-items: center;
     justify-content: center;
     background-color: white;
-}
 
-.ticTacToe-Info{
-    text-align: center;
-    width: 50%;
-    border: 1px solid red;
-    display: flex;
-    justify-content: space-evenly;
-}
+    .ticTacToe-Info {
+        text-align: center;
+        width: 50%;
+        border: 1px solid red;
+        display: flex;
+        justify-content: space-evenly;
+    }
 
-.ticTacToe-Info div {
+    .ticTacToe-Info div {}
 
-}
+    .row {
+        display: flex;
+    }
 
-.row {
-    display: flex;
-}
-
-.square {
-    background-color: #e8e5e5;
-    width: 50px;
-    height: 50px;
-    margin: 1px;
-    border: solid 1px black;
+    .square {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #e8e5e5;
+        width: 50px;
+        height: 50px;
+        outline: solid 1px black;
+        box-sizing: border-box
+    }
 }

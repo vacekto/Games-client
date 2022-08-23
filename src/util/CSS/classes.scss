@@ -9,7 +9,7 @@
     left: 0px;
 }
 
-.boardContainer {
+.gameContainer {
     border: 1px solid black;
     padding: 30px;
     display: flex;
@@ -38,4 +38,27 @@
     padding: 20px;
     display: flex;
     flex-direction: column;
+}
+
+.svgTimes {
+    color: #3989d4;
+    width: 20px;
+    height: 20px;
+}
+
+.svgCircle {
+    color: #39BCD4;
+    fill: white;
+    width: 20px;
+    height: 20px;
+}
+
+.square {
+    
+}
+
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

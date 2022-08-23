@@ -1,15 +1,14 @@
-import './UltimateTicTacToeBoard.css'
+import './UltimateTicTacToeBoard.scss'
 import { TTicTacToeBoard } from 'shared/types'
 import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/functions'
 import { useReducer, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import reducer from './UltimateTicTacToeReducer'
-import GameHeader from '../GameHeader'
+import reducer, { TUltimateTicTacToeState } from './UltimateTicTacToeReducer'
+import BoardHeader from '../BoardHeader'
+import BoardFooter from '../BoardFooter'
 
-interface IUltimateTicTacToeBoardProps {
 
-}
-
+interface IUltimateTicTacToeBoardProps { }
 
 const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) => {
     const [state, dispatch] = useReducer(reducer, {
@@ -33,6 +32,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
         if (state.activeSegment &&
             (state?.activeSegment[0] !== z || state.activeSegment[1] !== w)
         ) return
+
         dispatch({
             type: 'HOT_SEAT_MOVE',
             payload: { squareCOORD, segmentCOORD }
@@ -43,6 +43,13 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
         console.log(state.activeSegment)
     }, [state])
 
+
+    const getSegmentColor = (p: number, q: number) => {
+        if (!state.activeSegment) return ""
+        const [x, y] = state.activeSegment
+        const isActive = p === x && q === y
+        return isActive ? "yellow" : ""
+    }
 
     const renderTicTacToeBoard = (board: TTicTacToeBoard, z: number, w: number) => {
         return board.map((row, x) => {
@@ -60,22 +67,30 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
         })
     }
 
-    return <div className='ultimateTicTacToeBoard wholeScrean'>
-        <div className='boardContainer'>
-            <GameHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
-            {state.board.map((segmentRow, z) => {
-                return <div className='displayFlex' key={z}>
-                    {segmentRow.map((segment, w) => {
-                        return <div className='down quadrant' style={{ backgroundColor: state.activeSegment && state.activeSegment[0] === z && state.activeSegment[1] === w ? "yellow" : "" }} key={w}>
-                            {renderTicTacToeBoard(segment, z, w)}
-                        </div>
-                    })}
-                </div>
-            })}
-            <div> Mooving: {state.currentlyPlaying}</div>
-            <div className='TicTacToeFooter'>
-                <Link to='/'>Quit</Link>
+    const renderSegmentBoard = () => {
+        return state.board.map((row, rowCOORD) => {
+            return <div className='displayFlex' key={rowCOORD}>
+                {row.map((segment, columnCOORD) => {
+                    return <div
+                        className='down quadrant'
+                        style={{ backgroundColor: getSegmentColor(rowCOORD, columnCOORD) }}
+                        key={columnCOORD}
+                    >
+                        {renderTicTacToeBoard(segment, rowCOORD, columnCOORD)}
+                    </div>
+                })}
             </div>
+        })
+    }
+
+
+    return <div className='ultimateTicTacToeBoard wholeScrean'>
+        <div className='gameContainer'>
+            <BoardHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
+            <div className="boardConatiner">
+                {renderSegmentBoard()}
+            </div>
+            <BoardFooter currentlyPlaying={state.currentlyPlaying} />
         </div>
     </div >;
 };

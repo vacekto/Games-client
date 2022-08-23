@@ -8,19 +8,19 @@ import TicTacToeBoard from './components/TicTacToe/TicTacToeBoard';
 import UltimateTicTacToeOptions from './components/ultimateTicTacToe/UltimateTicTacToeOptions';
 import UltimateTicTacToeBoard from './components/ultimateTicTacToe/UltimateTicTacToeBoard';
 import UsernameModal from './components/UsernameModal';
-
+import { Circle, Times } from './util/SVG'
 
 function App() {
   const [username, setUsername] = useState<string | null>('Tom')
-  const [modal, setModal] = useState<'flex' | 'none'>('none')
+  const [displayModal, setDisplayModal] = useState<'flex' | 'none'>('none')
 
   const toggleModal = () => {
-    setModal(prevState => prevState === 'none' ? 'flex' : 'none')
+    setDisplayModal(prevState => prevState === 'none' ? 'flex' : 'none')
   }
 
   const handleSubmitUsername = (username: string) => {
     setUsername(username)
-    setModal('none')
+    setDisplayModal('none')
   }
 
 
@@ -30,7 +30,7 @@ function App() {
         <Link to='/'>Menu</Link>
         <div
           className="username"
-          onClick={() => { setModal(prevState => prevState === 'flex' ? 'none' : 'flex') }}
+          onClick={() => { setDisplayModal(prevState => prevState === 'flex' ? 'none' : 'flex') }}
         >
           {username}
         </div>
@@ -48,7 +48,7 @@ function App() {
 
         <Route path='*' element={<Main />} />
       </Routes>
-      <UsernameModal style={modal} exitModal={toggleModal} submit={handleSubmitUsername} />
+      <UsernameModal style={displayModal} exitModal={toggleModal} submit={handleSubmitUsername} />
     </div >
   );
 }
