@@ -1,0 +1,29 @@
+.boardFooter {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .switch {
+        margin-top: 5px;
+    }
+
+    .resultNotice {
+        margin-top: 30px;
+        opacity: 0;
+    }
+
+    .show{
+        opacity: 1;
+    }
+
+    .buttons {
+        display: flex;
+        margin-top: 30px;
+        font-weight: bold;
+
+        a {
+            margin: 0 20px;
+        }
+    }
+}

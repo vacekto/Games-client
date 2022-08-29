@@ -9,13 +9,13 @@ const Main: React.FC<IMainProps> = (props) => {
 
   return <div className='main'>
     <div>
-      <Link to='/TicTacToe'>TicTacToe</Link>
+      <Link className="genericRouterLink" to='/TicTacToe'>TicTacToe</Link>
     </div>
     <div>
-      <Link to='/UltimateTicTacToe'>UltimateTicTacToe</Link>
+      <Link className="genericRouterLink" to='/UltimateTicTacToe'>UltimateTicTacToe</Link>
     </div>
     <div>
-      <Link to='/Options'>Chess</Link>
+      <Link className="genericRouterLink" to='/Chess/Board'>Chess</Link>
     </div>
   </div>;
 };

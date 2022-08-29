@@ -3,22 +3,37 @@
     justify-content: center;
     align-items: center;
 
-    .displayFlex {
-        display: flex;
+    .header {
+        width: 100%;
+        margin-bottom: 10px;
     }
 
-    .down {
-        display: flex;
-        flex-direction: column;
-    }
+    .board {
+        .segment {
+            position: relative;
+            border: 1px solid rgb(219, 219, 219);
+            border-radius: 10px;
+            margin: 10px;
+            padding: 20px;
+            box-shadow: none;
 
-    .square {
-        width: 40px;
-        height: 40px;
-        border: 1px solid black;
-    }
+            .notFinished {
+                display: none;
+            }
 
-    .quadrant {
-        border: 1px solid black;
+            .finished {
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+
+            }
+
+        }
+
+        .active {
+            border: 1px solid #98DBE8;
+            box-shadow: 0 0 20px #98DBE8;
+        }
     }
 }

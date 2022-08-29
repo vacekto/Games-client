@@ -5,28 +5,13 @@
     justify-content: center;
     background-color: white;
 
-    .ticTacToe-Info {
-        text-align: center;
-        width: 50%;
-        border: 1px solid red;
-        display: flex;
-        justify-content: space-evenly;
+    .header {
+        width: 100%;
+        margin-bottom: 30px;
     }
 
-    .ticTacToe-Info div {}
-
-    .row {
-        display: flex;
-    }
-
-    .square {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #e8e5e5;
-        width: 50px;
-        height: 50px;
-        outline: solid 1px black;
-        box-sizing: border-box
+    .footer {
+        margin-top: 20px;
+        width: 100%;
     }
 }

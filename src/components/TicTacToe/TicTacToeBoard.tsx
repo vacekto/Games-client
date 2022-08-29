@@ -1,10 +1,11 @@
 import './TicTacToeBoard.scss'
 import { useReducer, useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
 import { TMode, TGameSide } from 'shared/types'
-import { Link } from 'react-router-dom'
 import { initializeTicTacToeBoard } from '../../util/functions'
 import reducer from './TicTacToeReducer'
 import BoardHeader from '../BoardHeader'
+import BoardFooter from '../BoardFooter'
 import { Circle, Times } from './../../util/SVG'
 
 interface ITicTacToeBoardProps {
@@ -13,7 +14,8 @@ interface ITicTacToeBoardProps {
   mode?: TMode
 }
 
-const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', mode = 'hotseat' }) => {
+const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 3, side = 'X', mode = 'hotseat' }) => {
+  const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, {
     board: initializeTicTacToeBoard(size),
     side: side,
@@ -28,16 +30,21 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
 
 
   const handleSquareClick = (x: number, y: number) => {
-    if (state.board[x][y] === null && state.side === state.currentlyPlaying) {
-      if (mode === 'multiplayer') {
-        //socket.emit('clientGameUpdate', state.board, [x, y])
-      } else {
-        dispatch({ type: 'HOT_SEAT_MOVE', payload: { COORD: [x, y] } })
-      }
+    if (state.board[x][y] !== null) return
+    if (state.side !== state.currentlyPlaying) return
+    if (state.winner) return
+    if (mode === 'multiplayer') {
+      //socket.emit('clientGameUpdate', state.board, [x, y])
+    } else {
+      dispatch({ type: 'HOT_SEAT_MOVE', payload: { COORD: [x, y] } })
     }
   }
 
-  const renderBoardValue = (value: 'X' | 'O' | null) => {
+  const handlePlayAgain = () => {
+    dispatch({ type: 'PLAY_AGAIN' })
+  }
+
+  const renderBoardValue = (value: 'X' | 'O' | null | 'draw') => {
     if (value === 'X') return <Times />
     if (value === 'O') return <Circle />
     return null
@@ -58,18 +65,20 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
 
   }, [/*socket*/ mode])
 
-  return <div className='ticTacToeBoard wholeScrean'>
-    <div className="gameContainer">
+  return <div className='ticTacToeBoard genericWholeScrean'>
+    <div className="genericGameContainer">
 
-      <BoardHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
+      <div className="header">
+        <BoardHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
+      </div>
 
-      <div>
-        {state.board.map((row: Array<"X" | "O" | null>, x: number) => {
-          return <div className="ticTacToeRow" key={x}>
-            {row.map((value: "X" | "O" | null, y: number) => {
+      <div className="board genericFlexColumn genericNoBorder">
+        {state.board.map((row: Array<"X" | "O" | null | 'draw'>, x: number) => {
+          return <div className="flex" key={x}>
+            {row.map((value: "X" | "O" | null | 'draw', y: number) => {
               return <div
                 key={y}
-                className='square'
+                className='genericTicTacToeSquare'
                 onClick={() => { handleSquareClick(x, y) }}
               >
                 {renderBoardValue(value)}
@@ -79,9 +88,12 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
         })}
       </div>
 
-      <div> Mooving: {state.currentlyPlaying}</div>
-      <div className='TicTacToeFooter'>
-        <Link to='/'>Quit</Link>
+      <div className='footer'>
+        <BoardFooter
+          currentlyPlaying={state.currentlyPlaying}
+          winner={state.winner}
+          playAgainCallback={handlePlayAgain}
+        />
       </div>
     </div>
   </div>

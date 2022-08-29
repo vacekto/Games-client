@@ -1,0 +1,70 @@
+@import '../util/CSS/variables.scss';
+$customPadding: 8px;
+$iconSize: 15px;
+$elementWidth: 65px;
+$transitionTime: 0.3s;
+
+.customSwitch {
+    border: 2px solid #EDF3F4;;
+    width: $elementWidth;
+    height: 30px;
+    border-radius: 40px;
+
+    .iconList {
+        padding: 0 $customPadding;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: space-between;
+        display: flex;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 1;
+
+
+        .icon {
+            width: $iconSize;
+            height: $iconSize;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            svg {
+                transition: color $transitionTime;
+            }
+        }
+
+        .active {
+            svg {
+                color: #fff;
+            }
+        }
+
+        .indicator {
+            box-sizing: border-box;
+            position: absolute;
+            transition: transform $transitionTime;
+            z-index: -1;
+
+            div {
+                transition: background-color $transitionTime;
+                position: absolute;
+                border-radius: $iconSize + 10px;
+                width: $iconSize + 10px;
+                height: $iconSize + 10px;
+                background-color: $TICTACTOE_CIRCLE_COLOR;
+            }
+        }
+
+        .right {
+            div {
+                background-color: $TICTACTOE_TIMES_COLOR;
+            }
+
+            transform: translateX($elementWidth - $customPadding - $customPadding - $iconSize);
+        }
+
+    }
+
+
+}

@@ -1,31 +1,27 @@
-.wholeScrean {
+@import './variables.scss';
+
+.genericWholeScrean {
     background-color: rgb(255, 255, 255);
     height: 100vh;
     width: 100vw;
     position: absolute;
+    float: left;
     top: 0px;
     right: 0px;
     bottom: 0px;
     left: 0px;
 }
 
-.gameContainer {
-    border: 1px solid black;
-    padding: 30px;
+.genericGameContainer {
+    border: 2px solid #98DBE8;
+    box-shadow: 0 0 20px #98DBE8;
+    padding: 30px 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.app-body {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.optionsContainer {
+.genericOptionsContainer {
     flex-grow: 1;
     height: 100%;
     display: flex;
@@ -33,32 +29,83 @@
     align-items: center;
 }
 
-.options {
+.genericOptions {
     border: 1px solid black;
     padding: 20px;
     display: flex;
     flex-direction: column;
 }
 
-.svgTimes {
+.genericSvgTimes {
     color: #3989d4;
-    width: 20px;
-    height: 20px;
 }
 
-.svgCircle {
+.genericSvgCircle {
     color: #39BCD4;
-    fill: white;
-    width: 20px;
-    height: 20px;
 }
 
-.square {
-    
+.flex {
+    display: flex;
 }
 
-.center{
+.genericFlexColumn {
+    display: flex;
+    flex-direction: column;
+}
+
+.genericTicTacToeSquare {
+    padding: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: $TICTACTOE_SQUARE_SIZE;
+    height: $TICTACTOE_SQUARE_SIZE;
+    border-right: 2px solid #D8D8D8;
+    border-bottom: 2px solid #D8D8D8;
+}
+
+.genericNoBorder {
+    :last-child div {
+        border-bottom: none;
+    }
+
+    :not(:last-child) div {
+        height: calc($TICTACTOE_SQUARE_SIZE - 1px);
+    }
+
+    div :last-child {
+        border-right: none;
+    }
+
+    div :not(:last-child) {
+        width: calc($TICTACTOE_SQUARE_SIZE - 1px);
+    }
+}
+
+.genericRouterLink {
+    text-decoration: none;
+    color: #919191;
+
+}
+
+.genericButton {
+    min-width: 120px;
+    height: 40px;
+    border: 2px solid #cacaca;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #919191;
+}
+
+.genericButton:hover {
+    cursor: pointer;
+    transition: border 0.5s;
+    border: 2px solid black;
+    color: black;
+}
+
+.disabled-link {
+    pointer-events: none;
 }

@@ -8,7 +8,7 @@ import TicTacToeBoard from './components/TicTacToe/TicTacToeBoard';
 import UltimateTicTacToeOptions from './components/ultimateTicTacToe/UltimateTicTacToeOptions';
 import UltimateTicTacToeBoard from './components/ultimateTicTacToe/UltimateTicTacToeBoard';
 import UsernameModal from './components/UsernameModal';
-import { Circle, Times } from './util/SVG'
+import CustomSwitch from './components/CustomSwitch';
 
 function App() {
   const [username, setUsername] = useState<string | null>('Tom')
@@ -27,7 +27,7 @@ function App() {
   return (
     <div className="App">
       <div className='appHeader'>
-        <Link to='/'>Menu</Link>
+        <Link className="genericRouterLink" to='/'>Menu</Link>
         <div
           className="username"
           onClick={() => { setDisplayModal(prevState => prevState === 'flex' ? 'none' : 'flex') }}
@@ -42,10 +42,9 @@ function App() {
         <Route path="/UltimateTicTacToe" element={<UltimateTicTacToeOptions />} >
           <Route path="Board" element={<UltimateTicTacToeBoard />} />
         </Route>
-        <Route path="/Chess" element={<TicTacToeOptions />} >
-          <Route path='Board' element={<TicTacToeBoard />} />
+        <Route path="/Chess" element={<CustomSwitch moving='X' />} >
+          <Route path='Board' element={<CustomSwitch moving='O'/>} />
         </Route>
-
         <Route path='*' element={<Main />} />
       </Routes>
       <UsernameModal style={displayModal} exitModal={toggleModal} submit={handleSubmitUsername} />

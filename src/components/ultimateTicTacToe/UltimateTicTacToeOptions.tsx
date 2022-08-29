@@ -11,11 +11,11 @@ const UltimateTicTacToeOptions: React.FC<IUltimateTicTacToeOptionsProps> = (prop
     //const socket = socketInstance
 
     return <div className='ultimateTicTacToeOptions'>
-        <div className="optionsContainer">
-            <div className="options">
-                <Link to={'/UltimateTicTacToe/Board'}>Hotseat</Link>
+        <div className="genericOptionsContainer">
+            <div className="genericOptions">
+                <Link className="genericRouterLink" to={'/UltimateTicTacToe/Board'}>Hotseat</Link>
                 <button>VS PC</button>
-                <Link to={'/'}>back</Link>
+                <Link className="genericRouterLink" to={'/'}>back</Link>
             </div>
         </div>
         <Lobby />

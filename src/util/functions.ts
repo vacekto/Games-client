@@ -1,8 +1,8 @@
-import { TUltimateTicTacToeBoard, TTicTacToeBoard } from "shared/types"
+import { TTicTacToeBoard } from "shared/types"
 
 export const initializeUltimateTicTacToeBoard = () => {
     const initQuadrants = Array(3).fill(Array(3).fill(null))
-    const initUltimateTicTacToeBoard: TUltimateTicTacToeBoard = initQuadrants.map(quadrantRow => {
+    const initUltimateTicTacToeBoard: TTicTacToeBoard[][] = initQuadrants.map(quadrantRow => {
         return quadrantRow.map(() => {
             return Array(3).fill(Array(3).fill(null))
         })

@@ -1,11 +1,12 @@
-import { TTicTacToeBoard, TTicTacToeSide, TGameSide } from 'shared/types'
-import { checkForWinnerTicTacToe } from '../../util/gameLogic'
+import { TTicTacToeBoard, TTicTacToeSide } from 'shared/types'
+import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from '../../util/gameLogic'
+import { initializeTicTacToeBoard } from '../../util/functions'
 
 export interface TTicTacToeState {
     board: TTicTacToeBoard
     side: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
-    winner: 'X' | 'O' | null
+    winner: 'X' | 'O' | null | 'draw'
     score: {
         X: number
         O: number
@@ -13,30 +14,39 @@ export interface TTicTacToeState {
     }
 }
 
-type TTicTacToeAction =
-    | { type: 'HOT_SEAT_MOVE'; payload: { COORD: [number, number] } }
-//| { type: 'SET_SIDE' };
+export type TTicTacToeAction =
+    { type: 'HOT_SEAT_MOVE'; payload: { COORD: [number, number] } }
+    | { type: 'PLAY_AGAIN' };
 
 
 const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
+    let update;
     switch (action.type) {
         case 'HOT_SEAT_MOVE':
+            update = { ...prevState }
             const [x, y] = action.payload.COORD
-            const board = JSON.parse(JSON.stringify(prevState.board))
-            board[x][y] = prevState.currentlyPlaying
-            const isWinner = checkForWinnerTicTacToe(board, [x, y], 5)
-            const scoreUpdate = { ...prevState.score }
-            if (isWinner) scoreUpdate[prevState.currentlyPlaying] += 1
-            return {
-                board,
-                side: prevState.side === "X" ? 'O' : 'X' as TGameSide,
-                currentlyPlaying: prevState.side === "X" ? 'O' : 'X' as TGameSide,
-                winner: isWinner ? prevState.currentlyPlaying : null,
-                score: { ...scoreUpdate }
+            update.board = JSON.parse(JSON.stringify(prevState.board))
+            update.board[x][y] = prevState.currentlyPlaying
+            if (checkForDrawTicTacToe(update.board)) {
+                update.winner = 'draw'
+                update.score.draw += 1
             }
+            if (checkForWinnerTicTacToe(update.board, [x, y], 3)) {
+                update.winner = prevState.currentlyPlaying
+                update.score[prevState.currentlyPlaying] += 1
+            }
+            update.currentlyPlaying = prevState.side === "X" ? 'O' : 'X'
+            update.side = prevState.side === "X" ? 'O' : 'X'
+            return update
+
+        case 'PLAY_AGAIN':
+            update = { ...prevState }
+            update.board = initializeTicTacToeBoard(prevState.board.length)
+            update.winner = null
+            return update
 
         default:
-            throw new Error()
+            return { ...prevState }
     }
 }
 

@@ -1,29 +1,35 @@
 import './BoardHeader.scss'
-import { Circle, Times } from '../util/SVG'
+import { Circle, Times, Scales } from '../util/SVG'
 
-interface IGameHeaderProps {
+interface IBoardHeaderProps {
     player1: number
     player2: number
     draw: number
 }
 
-const GameHeader: React.FC<IGameHeaderProps> = ({ player1, player2, draw }) => {
-    return <div className='gameHeaderContainer'>
-        <div className='gameHeader'>
-            <div>
+const BoardHeader: React.FC<IBoardHeaderProps> = ({ player1, player2, draw }) => {
+    return <div className='boardHeader'>
+        <div className="scoreInfo player1Wins">
+            <div className='svgContainer'>
                 <Times />
-                <div>{player1}</div>
             </div>
             <div>
+                {player1} wins
+            </div>
+        </div>
+        <div className="scoreInfo player2Wins">
+            <div className='svgContainer'>
                 <Circle />
-                <div>{player2}</div>
             </div>
-            <div>
-                <div>weight</div>
-                <div>{draw}</div>
+            <div>{player2} wins</div>
+        </div>
+        <div className="scoreInfo draws">
+            <div className='svgContainer'>
+                <Scales />
             </div>
+            <div>{draw} draws</div>
         </div>
     </div>
 };
 
-export default GameHeader;
+export default BoardHeader;

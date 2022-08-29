@@ -30,14 +30,14 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
     }, [socket])
 
     return <div className='ticTacToeOptions'>
-        <div className='optionsContainer'>
-            <div className='options'>
-                <button><Link to={'/TicTacToe/board'}>Hotseat</Link></button>
+        <div className='genericOptionsContainer'>
+            <div className='genericOptions'>
+                <button><Link className="genericRouterLink" to={'/TicTacToe/board'}>Hotseat</Link></button>
                 <button>VS PC</button>
                 <button onClick={handleSearchClick}>Quick search</button>
                 {searching ? 'searching ...' : null}
                 <button >invite friend</button>
-                <button><Link to={'/'}>back</Link></button>
+                <button><Link className="genericRouterLink" to={'/'}>back</Link></button>
             </div>
         </div>
         <Lobby />
