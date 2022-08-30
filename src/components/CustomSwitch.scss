@@ -1,13 +1,15 @@
 @import '../util/CSS/variables.scss';
 $customPadding: 8px;
-$iconSize: 15px;
-$elementWidth: 65px;
+$iconSize: 20px;
+$elementWidth: 70px;
 $transitionTime: 0.3s;
+$circleRadius: 16px;
 
 .customSwitch {
-    border: 2px solid #EDF3F4;;
+    border: 2px solid #EDF3F4;
+    ;
     width: $elementWidth;
-    height: 30px;
+    height: 35px;
     border-radius: 40px;
 
     .iconList {
@@ -49,9 +51,9 @@ $transitionTime: 0.3s;
             div {
                 transition: background-color $transitionTime;
                 position: absolute;
-                border-radius: $iconSize + 10px;
-                width: $iconSize + 10px;
-                height: $iconSize + 10px;
+                border-radius: $iconSize + $circleRadius;
+                width: $iconSize + $circleRadius;
+                height: $iconSize + $circleRadius;
                 background-color: $TICTACTOE_CIRCLE_COLOR;
             }
         }

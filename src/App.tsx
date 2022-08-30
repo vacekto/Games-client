@@ -39,7 +39,7 @@ function App() {
         <Route path='/TicTacToe' element={<TicTacToeOptions />} >
           <Route path='Board' element={<TicTacToeBoard />} />
         </Route>
-        <Route path="/UltimateTicTacToe" element={<UltimateTicTacToeOptions />} >
+        <Route path="/UltimateTicTacToe/*" element={<UltimateTicTacToeOptions />} >
           <Route path="Board" element={<UltimateTicTacToeBoard />} />
         </Route>
         <Route path="/Chess" element={<CustomSwitch moving='X' />} >

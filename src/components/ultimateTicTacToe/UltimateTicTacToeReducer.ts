@@ -21,28 +21,28 @@ export type TUltimateTicTacToeAction =
     | { type: 'PLAY_AGAIN' }
 
 const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeAction) => {
-    let update;
+    let update: TUltimateTicTacToeState;
     switch (action.type) {
         case 'HOT_SEAT_MOVE':
-            update = { ...prevState }
+            update = JSON.parse(JSON.stringify(prevState))
             const [x, y] = action.payload.squareCOORD
             const [z, w] = action.payload.segmentCOORD
-            update.ultimateBoard = JSON.parse(JSON.stringify(prevState.ultimateBoard))
             update.ultimateBoard[z][w][x][y] = prevState.currentlyPlaying
-            const wonSegment = checkForWinnerTicTacToe(update.ultimateBoard[z][w], [x, y], 3)
-            if (wonSegment) {
-                update.segmentBoard = JSON.parse(JSON.stringify(prevState.segmentBoard))
+            const segmentWin = checkForWinnerTicTacToe(update.ultimateBoard[z][w], [x, y], 3)
+            const segmentDraw = checkForDrawTicTacToe(update.ultimateBoard[z][w])
+            if (segmentDraw) update.segmentBoard[z][w] = 'draw'
+            else if (segmentWin) {
                 update.segmentBoard[z][w] = prevState.currentlyPlaying
-                if (checkForDrawTicTacToe(update.segmentBoard)) {
-                    update.winner = 'draw'
-                    update.score.draw += 1
-                }
                 const isWinner = checkForWinnerTicTacToe(update.segmentBoard, [z, w], 3)
                 if (isWinner) {
                     update.winner = prevState.currentlyPlaying
                     update.score[prevState.currentlyPlaying] += 1
-                    return JSON.parse(JSON.stringify(update))
+                    return update
                 }
+            }
+            if (checkForDrawTicTacToe(update.segmentBoard)) {
+                update.winner = 'draw'
+                update.score.draw += 1
             }
             if (update.segmentBoard[x][y] || checkForDrawTicTacToe(update.ultimateBoard[x][y])) update.activeSegment = null
             else update.activeSegment = [x, y]
@@ -59,7 +59,7 @@ const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeA
             update.activeSegment = null
             update.side = prevState.side === 'X' ? 'O' : 'X'
             update.currentlyPlaying = prevState.currentlyPlaying === 'X' ? 'O' : 'X'
-            return JSON.parse(JSON.stringify(update))
+            return update
 
         default:
             return { ...prevState }

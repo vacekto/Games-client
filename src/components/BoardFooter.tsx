@@ -1,9 +1,7 @@
 import './BoardFooter.scss'
 import { TGameSide } from 'shared/types'
-import { TUltimateTicTacToeAction } from './ultimateTicTacToe/UltimateTicTacToeReducer'
-import { TTicTacToeAction } from './TicTacToe/TicTacToeReducer'
-import { Link } from 'react-router-dom'
 import CustomSwitch from './CustomSwitch'
+import { useNavigate } from "react-router-dom";
 
 interface IBoardFooterProps {
   currentlyPlaying: TGameSide
@@ -12,6 +10,7 @@ interface IBoardFooterProps {
 }
 
 const BoardFooter: React.FC<IBoardFooterProps> = ({ currentlyPlaying, winner, playAgainCallback }) => {
+  let navigate = useNavigate();
 
   const renderWinner = () => {
     if (winner === 'draw') return <div>
@@ -30,9 +29,13 @@ const BoardFooter: React.FC<IBoardFooterProps> = ({ currentlyPlaying, winner, pl
       {renderWinner()}
     </div>
     <div className="buttons">
-      <Link className="genericRouterLink genericButton" to='/'>Quit</Link>
+      <div className="genericButton"
+        onClick={() => { navigate("/") }}
+      >
+        Quit
+      </div>
       <div
-        className={`genericRouterLink genericButton ${winner ? '' : 'disabled-link'}`}
+        className={`genericButton ${winner ? '' : 'disabled-link'}`}
         onClick={playAgainCallback}
       >
         Play again

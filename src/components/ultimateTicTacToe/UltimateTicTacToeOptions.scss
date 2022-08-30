@@ -1,9 +1,9 @@
-.ticTacToeOptions {
+.ultimateTicTacToeOptions {
     display: flex;
     height: 100%;
-
+    .gName{
+    }
     .genericButton {
-
         a {
             background-color: aqua;
             width: 100%;
@@ -11,5 +11,4 @@
             border-radius: 15px;
         }
     }
-
 }

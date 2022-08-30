@@ -38,7 +38,6 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
             (state.activeSegment[0] !== z ||
                 state.activeSegment[1] !== w)
         ) return
-
         dispatch({
             type: 'HOT_SEAT_MOVE',
             payload: { squareCOORD, segmentCOORD }
@@ -56,7 +55,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
         return z === x && w === y ? "active" : ""
     }
 
-    const renderBoardValue = (value: 'X' | 'O' | null | 'draw') => {
+    const renderIcon = (value: 'X' | 'O' | null | 'draw') => {
         if (value === 'X') return <Times />
         if (value === 'O') return <Circle />
         return null
@@ -71,7 +70,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
                         className={`genericTicTacToeSquare`}
                         onClick={() => { handleSquareClick([x, y], [z, w]) }}
                     >
-                        {renderBoardValue(value)}
+                        {renderIcon(value)}
                     </div>
                 })}
             </div>
@@ -80,7 +79,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
     }
 
     const renderSegmentBoard = () => {
-        return state.ultimateBoard.map((segmentRow: [], z: number) => {
+        return state.ultimateBoard.map((segmentRow, z) => {
             return <div className='flex' key={z}>
                 {segmentRow.map((segment, w) => {
                     return <div
@@ -89,7 +88,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
                         key={w}
                     >
                         <div className={state.segmentBoard[z][w] ? 'finished' : 'notFinished'}>
-                            {state.segmentBoard[z][w] === 'O' ? <Circle /> : <Times />}
+                            {renderIcon(state.segmentBoard[z][w])}
                         </div>
                         {renderTicTacToeBoard(segment, z, w)}
                     </div>

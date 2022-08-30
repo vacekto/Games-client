@@ -1,26 +1,37 @@
-import './UltimateTicTacToeOptions.css'
-//import socketInstance from '../../util/socketSingleton'
-import { Link, Outlet } from 'react-router-dom'
+import './UltimateTicTacToeOptions.scss'
+import { Outlet } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import Lobby from '../Lobby'
 
-interface IUltimateTicTacToeOptionsProps {
-
-}
+interface IUltimateTicTacToeOptionsProps { }
 
 const UltimateTicTacToeOptions: React.FC<IUltimateTicTacToeOptionsProps> = (props) => {
-    //const socket = socketInstance
+    let navigate = useNavigate();
+
+    const handleClick = {
+        hotseat: () => { navigate("Board") },
+        vsPC: () => { },
+        back: () => { navigate("../") }
+    }
 
     return <div className='ultimateTicTacToeOptions'>
         <div className="genericOptionsContainer">
             <div className="genericOptions">
-                <Link className="genericRouterLink" to={'/UltimateTicTacToe/Board'}>Hotseat</Link>
-                <button>VS PC</button>
-                <Link className="genericRouterLink" to={'/'}>back</Link>
+                <div className="gName">Ultimate Tic Tac Toe</div>
+                <button className="genericButton optionsButton" onClick={handleClick.hotseat}>
+                    Hotseat
+                </button>
+                <button className="genericButton optionsButton">
+                    VS PC
+                </button>
+                <button className="genericButton optionsButton" onClick={handleClick.back}>
+                    Back
+                </button>
             </div>
         </div>
         <Lobby />
         <Outlet />
-    </div>;
+    </div >;
 };
 
 export default UltimateTicTacToeOptions;
