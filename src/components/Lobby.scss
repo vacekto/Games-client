@@ -2,4 +2,18 @@
     height: 100%;
     width: 300px;
     outline: 1px solid red;
+
+    .header {
+        font-size: large;
+    }
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+        border: 1px solid black;
+        padding: 0 10px;
+        
+    }
 }

@@ -10,7 +10,7 @@ interface IBoardFooterProps {
 }
 
 const BoardFooter: React.FC<IBoardFooterProps> = ({ currentlyPlaying, winner, playAgainCallback }) => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const renderWinner = () => {
     if (winner === 'draw') return <div>

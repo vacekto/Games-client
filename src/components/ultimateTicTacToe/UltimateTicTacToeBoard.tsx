@@ -1,7 +1,7 @@
 import './UltimateTicTacToeBoard.scss'
 import { TTicTacToeBoard } from 'shared/types'
 import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/functions'
-import { useReducer, useEffect } from 'react'
+import { useReducer } from 'react'
 import reducer from './UltimateTicTacToeReducer'
 import BoardHeader from '../BoardHeader'
 import BoardFooter from '../BoardFooter'
@@ -17,6 +17,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
         side: 'X',
         currentlyPlaying: 'X',
         winner: null,
+        mode: 'hotseat',
         score: {
             X: 0,
             O: 0,
@@ -43,10 +44,6 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
             payload: { squareCOORD, segmentCOORD }
         })
     }
-
-    useEffect(() => {
-        console.log(state.segmentBoard)
-    }, [state])
 
 
     const markActive = (z: number, w: number) => {

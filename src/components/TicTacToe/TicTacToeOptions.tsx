@@ -1,9 +1,9 @@
 import './TicTacToeOptions.scss'
-import { Link, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import socketInstance from '../../util/socketSingleton'
 import Lobby from '../Lobby'
+import socket from '../../util/socketInstance'
 
 interface ITicTacToeOptionsProps {
 
@@ -11,8 +11,8 @@ interface ITicTacToeOptionsProps {
 
 const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
     const [searching, setSearching] = useState<boolean>(false) //search for oponent
+    //const { socket } = useContext(appContext)!
     let navigate = useNavigate();
-    const socket = socketInstance
 
     const handleClick = {
         hotseat: () => { navigate("Board") },
@@ -27,15 +27,15 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
     }
 
     useEffect(() => {
-        if (!socket.hasListeners('SERVER_GAME_UPDATE')) {
-            socket.on('SERVER_GAME_UPDATE', () => {
-
-            })
-        }
+        //if (!socket.hasListeners('SERVER_GAME_UPDATE')) {
+        //    socket.on('SERVER_GAME_UPDATE', () => {
+        //
+        //      })
+        //   }
         return () => {
-            socket.removeAllListeners('SERVER_GAME_UPDATE')
+            //     socket.removeAllListeners('SERVER_GAME_UPDATE')
         }
-    }, [socket])
+    }, [])
 
     return <div className='ticTacToeOptions'>
         <div className='genericOptionsContainer'>
@@ -43,8 +43,7 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
                 <div className="gName">Tic Tac Toe</div>
                 <button className="genericButton optionsButton" onClick={handleClick.hotseat}>Hotseat</button>
                 <button className="genericButton optionsButton">VS PC</button>
-                <button className="genericButton optionsButton" onClick={handleSearchClick}>Quick search</button>
-                {searching ? 'searching ...' : null}
+                <button className="genericButton optionsButton" onClick={handleSearchClick}>{searching ? 'Searching..' : 'Find opponent'}</button>
                 <button className="genericButton optionsButton" >invite friend</button>
                 <button className="genericButton optionsButton" onClick={handleClick.back}>Back</button>
             </div>

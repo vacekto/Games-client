@@ -2,34 +2,48 @@
 
 .genericWholeScrean {
     background-color: rgb(255, 255, 255);
-    height: 100vh;
-    width: 100vw;
     position: absolute;
-    float: left;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    @media (max-width: 750px) {
+
+        width: 100%;
+        margin: 0;
+    }
+
 }
 
 .genericGameContainer {
     border: 2px solid #98DBE8;
     box-shadow: 0 0 20px #98DBE8;
     padding: 30px 40px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+
+    @media (max-width: 750px) {
+
+        margin: 0;
+        padding: 0;
+        align-items: stretch;
+    }
+
 }
 
 .genericOptionsContainer {
     flex-grow: 1;
-    height: 100%;
+
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .genericOptions {
+
     border: 1px solid black;
     padding: 20px;
     display: flex;
@@ -39,7 +53,7 @@
     .gName {
         font-size: 30px;
         margin-bottom: 60px;
-        color: #3989d4  ;
+        color: #3989d4;
     }
 }
 

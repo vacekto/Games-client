@@ -1,26 +1,28 @@
 import './TicTacToeBoard.scss'
 import { useReducer, useEffect } from 'react'
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from 'react-router-dom'
 import { TMode, TGameSide } from 'shared/types'
 import { initializeTicTacToeBoard } from '../../util/functions'
 import reducer from './TicTacToeReducer'
 import BoardHeader from '../BoardHeader'
 import BoardFooter from '../BoardFooter'
 import { Circle, Times } from './../../util/SVG'
-
+import socket from '../../util/socketInstance'
 interface ITicTacToeBoardProps {
   size?: number
   side?: TGameSide
   mode?: TMode
 }
 
-const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 3, side = 'X', mode = 'hotseat' }) => {
+const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', mode = 'hotseat' }) => {
+  const params = useParams();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, {
     board: initializeTicTacToeBoard(size),
     side: side,
     currentlyPlaying: 'X',
     winner: null,
+    mode: mode,
     score: {
       X: 0,
       O: 0,
@@ -51,10 +53,12 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 3, side = 'X', 
   }
 
   useEffect(() => {
+
+    if (params.mode === 'multiplayer' && socket.gameId !== params.gameId) navigate('/')
     if (mode === 'multiplayer') {
       /*if (!socket.hasListeners('serverGameUpdate')) {
         socket.on('serverGameUpdate', () => {
-
+ 
         })
       }*/
     }
@@ -63,7 +67,7 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 3, side = 'X', 
       //socket.removeAllListeners('serverGameUpdate')
     }
 
-  }, [/*socket*/ mode])
+  }, [])
 
   return <div className='ticTacToeBoard genericWholeScrean'>
     <div className="genericGameContainer">

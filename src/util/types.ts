@@ -1,8 +1,6 @@
 import { Socket } from 'socket.io-client'
+import { ClientToServerEvents, ServerToClientEvents } from 'shared/socketTypes'
 
-export interface IGameSocket<T1, T2> extends Socket<T1, T2> {
-    data?: {
-        gameName?: string | null
-        gameId?: string | null
-    }
+export interface IGameSocet extends Socket<ServerToClientEvents, ClientToServerEvents> {
+    gameId?: string
 }

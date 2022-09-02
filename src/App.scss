@@ -3,20 +3,26 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: "Luckiest Guy";
-}
 
-.appHeader {
-  border: 1px solid black;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+  font-family: 'Comic Sans MS';
 
-.username {
-  border: 1px solid black;
-  cursor: pointer;
-  padding: 5px 10px;
-  margin-right: 10px;
+  .appHeader {
+    padding: 0px 40px 0px 40px;
+    background-color: #2D3E50;
+    color: white;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: larger;
+
+    .menu{
+      cursor: pointer;
+    }
+
+    .username {
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  }
 }

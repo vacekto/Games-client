@@ -1,4 +1,4 @@
-import { TTicTacToeBoard, TTicTacToeSide } from 'shared/types'
+import { TTicTacToeBoard, TTicTacToeSide, TMode } from 'shared/types'
 import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from '../../util/gameLogic'
 import { initializeTicTacToeBoard } from '../../util/functions'
 
@@ -7,6 +7,7 @@ export interface TTicTacToeState {
     side: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
+    mode: TMode
     score: {
         X: number
         O: number
@@ -30,7 +31,7 @@ const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
                 update.winner = 'draw'
                 update.score.draw += 1
             }
-            if (checkForWinnerTicTacToe(update.board, [x, y], 3)) {
+            if (checkForWinnerTicTacToe(update.board, [x, y], 5)) {
                 update.winner = prevState.currentlyPlaying
                 update.score[prevState.currentlyPlaying] += 1
             }

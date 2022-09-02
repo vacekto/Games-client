@@ -1,4 +1,4 @@
-import { TTicTacToeSide, TTicTacToeBoard } from 'shared/types'
+import { TTicTacToeSide, TTicTacToeBoard, TMode } from 'shared/types'
 import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from '../../util/gameLogic'
 import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/functions'
 
@@ -9,6 +9,7 @@ export interface TUltimateTicTacToeState {
     side: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
+    mode: TMode
     score: {
         X: number
         O: number
