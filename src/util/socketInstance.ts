@@ -1,6 +1,5 @@
-import { io, Socket } from 'socket.io-client'
-import { ClientToServerEvents, ServerToClientEvents } from 'shared/socketTypes'
-import { IGameSocet } from './types'
+import { io } from 'socket.io-client'
+import { IGameSocet } from 'src/util/types'
 
 const socket: IGameSocet = io('http://localhost:3001')
 

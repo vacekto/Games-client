@@ -1,21 +1,19 @@
 import './TicTacToeOptions.scss'
 import { Outlet } from 'react-router-dom'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Lobby from '../Lobby'
-import socket from '../../util/socketInstance'
+import socket from 'src/util/socketInstance'
 
 interface ITicTacToeOptionsProps {
-
 }
 
-const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
-    const [searching, setSearching] = useState<boolean>(false) //search for oponent
-    //const { socket } = useContext(appContext)!
+const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = (props) => {
+    const [searching, setSearching] = useState<boolean>(false)
     let navigate = useNavigate();
 
     const handleClick = {
-        hotseat: () => { navigate("Board") },
+        hotseat: () => { navigate("hotseat") },
         vsPC: () => { },
         back: () => { navigate("../") }
     }
@@ -23,19 +21,8 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = () => {
     const handleSearchClick = () => {
         if (searching) socket.emit('CANCEL_SEARCH_FOR_OPPONENT', 'ticTacToe')
         else socket.emit('SEARCH_FOR_OPPONENT', 'ticTacToe')
-        setSearching(state => !state)
+        setSearching(prevState => !prevState)
     }
-
-    useEffect(() => {
-        //if (!socket.hasListeners('SERVER_GAME_UPDATE')) {
-        //    socket.on('SERVER_GAME_UPDATE', () => {
-        //
-        //      })
-        //   }
-        return () => {
-            //     socket.removeAllListeners('SERVER_GAME_UPDATE')
-        }
-    }, [])
 
     return <div className='ticTacToeOptions'>
         <div className='genericOptionsContainer'>

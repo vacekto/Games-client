@@ -1,20 +1,29 @@
 import './UltimateTicTacToeBoard.scss'
-import { TTicTacToeBoard } from 'shared/types'
+import { TMode, TTicTacToeBoard } from 'shared/types'
 import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/functions'
-import { useReducer } from 'react'
+import { useReducer, useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import reducer from './UltimateTicTacToeReducer'
 import BoardHeader from '../BoardHeader'
 import BoardFooter from '../BoardFooter'
 import { Times, Circle } from '../../util/SVG'
+import socket from 'src/util/socketInstance'
 
-interface IUltimateTicTacToeBoardProps { }
+interface IUltimateTicTacToeBoardProps {
+    mode: TMode
+    username: string
+}
 
-const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) => {
+const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, username }) => {
+    const params = useParams();
+    const navigate = useNavigate();
+    const [oponentsWantsRematch, setOpponentWantsRematch] = useState<boolean>(false)
     const [state, dispatch] = useReducer(reducer, {
         activeSegment: null,
         segmentBoard: initializeTicTacToeBoard(3),
         ultimateBoard: initializeUltimateTicTacToeBoard(),
-        side: 'X',
+        side: mode === 'multiplayer' ? params.side === 'X' ? 'X' : 'O' : 'X',
+        opponentSide: mode === 'multiplayer' ? params.side === 'X' ? 'O' : 'X' : 'O',
         currentlyPlaying: 'X',
         winner: null,
         mode: 'hotseat',
@@ -26,7 +35,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
     })
 
     const handlePlayAgain = () => {
-        dispatch({ type: 'PLAY_AGAIN' })
+        dispatch({ type: 'RESET_BOARD' })
     }
 
     const handleSquareClick = (squareCOORD: [number, number], segmentCOORD: [number, number]) => {
@@ -40,7 +49,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
                 state.activeSegment[1] !== w)
         ) return
         dispatch({
-            type: 'HOT_SEAT_MOVE',
+            type: 'HOTSEAT_MOVE',
             payload: { squareCOORD, segmentCOORD }
         })
     }
@@ -98,7 +107,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
     return <div className='ultimateTicTacToeBoard genericWholeScrean'>
         <div className='genericGameContainer'>
             <div className="header">
-                <BoardHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
+                <BoardHeader clientSide={state.side} opponentSide={state.opponentSide} clientUsername={username} opponentUsername={params.opponentUsername!} score={{ ...state.score }} />
             </div>
             <div className="board genericFlexColumn">
                 {renderSegmentBoard()}
@@ -108,6 +117,8 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = (props) =
                     currentlyPlaying={state.currentlyPlaying}
                     winner={state.winner}
                     playAgainCallback={handlePlayAgain}
+                    quitCallback={() => { }}
+                    oponentsWantsRematch={oponentsWantsRematch}
                 />
             </div>
         </div>

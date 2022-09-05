@@ -1,10 +1,11 @@
+import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from 'src/util/gameLogic'
+import { initializeTicTacToeBoard } from 'src/util/functions'
 import { TTicTacToeBoard, TTicTacToeSide, TMode } from 'shared/types'
-import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from '../../util/gameLogic'
-import { initializeTicTacToeBoard } from '../../util/functions'
 
-export interface TTicTacToeState {
+interface TTicTacToeState {
     board: TTicTacToeBoard
     side: TTicTacToeSide
+    opponent: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
     mode: TMode
@@ -16,14 +17,16 @@ export interface TTicTacToeState {
 }
 
 export type TTicTacToeAction =
-    { type: 'HOT_SEAT_MOVE'; payload: { COORD: [number, number] } }
-    | { type: 'PLAY_AGAIN' };
+    { type: 'HOTSEAT_MOVE'; payload: { COORD: [number, number] } }
+    | { type: 'MULTIPLAYER_MOVE', payload: TTicTacToeBoard }
+    | { type: 'PLAYER_WON_GAME', payload: TTicTacToeSide | 'draw' }
+    | { type: 'NEW_GAME' }
 
 
 const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
     let update: TTicTacToeState;
     switch (action.type) {
-        case 'HOT_SEAT_MOVE':
+        case 'HOTSEAT_MOVE':
             update = JSON.parse(JSON.stringify(prevState))
             const [x, y] = action.payload.COORD
             update.board[x][y] = prevState.currentlyPlaying
@@ -35,11 +38,23 @@ const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
                 update.winner = prevState.currentlyPlaying
                 update.score[prevState.currentlyPlaying] += 1
             }
-            update.currentlyPlaying = prevState.side === "X" ? 'O' : 'X'
             update.side = prevState.side === "X" ? 'O' : 'X'
+            update.currentlyPlaying = prevState.side === "X" ? 'O' : 'X'
             return update
 
-        case 'PLAY_AGAIN':
+        case 'MULTIPLAYER_MOVE':
+            update = JSON.parse(JSON.stringify(prevState))
+            update.board = action.payload
+            update.currentlyPlaying = (prevState.currentlyPlaying === "X" ? 'O' : 'X')
+            return update
+
+        case 'PLAYER_WON_GAME':
+            update = JSON.parse(JSON.stringify(prevState))
+            update.winner = action.payload
+            update.score[action.payload] += 1
+            return update
+
+        case 'NEW_GAME':
             update = JSON.parse(JSON.stringify(prevState))
             update.board = initializeTicTacToeBoard(prevState.board.length)
             update.winner = null

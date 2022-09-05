@@ -1,18 +1,26 @@
 import './BoardFooter.scss'
 import { TGameSide } from 'shared/types'
 import CustomSwitch from './CustomSwitch'
-import { useNavigate } from "react-router-dom";
 
 interface IBoardFooterProps {
   currentlyPlaying: TGameSide
-  winner: 'X' | 'O' | null | 'draw',
+  winner: 'X' | 'O' | null | 'draw'
   playAgainCallback: () => void
+  quitCallback: () => void
+  oponentsWantsRematch: boolean
 }
 
-const BoardFooter: React.FC<IBoardFooterProps> = ({ currentlyPlaying, winner, playAgainCallback }) => {
-  const navigate = useNavigate();
+const BoardFooter: React.FC<IBoardFooterProps> = ({
+  currentlyPlaying,
+  winner,
+  playAgainCallback,
+  quitCallback,
+  oponentsWantsRematch }) => {
 
   const renderWinner = () => {
+    if (oponentsWantsRematch) return <div>
+      Your opponent wants to play again!
+    </div>
     if (winner === 'draw') return <div>
       Its a draw!
     </div>
@@ -30,7 +38,7 @@ const BoardFooter: React.FC<IBoardFooterProps> = ({ currentlyPlaying, winner, pl
     </div>
     <div className="buttons">
       <div className="genericButton"
-        onClick={() => { navigate("/") }}
+        onClick={quitCallback}
       >
         Quit
       </div>

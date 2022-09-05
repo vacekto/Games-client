@@ -1,12 +1,13 @@
-import { TTicTacToeSide, TTicTacToeBoard, TMode } from 'shared/types'
-import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from '../../util/gameLogic'
-import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/functions'
+import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from 'src/util/gameLogic'
+import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from 'src/util/functions'
+import { TTicTacToeBoard, TTicTacToeSide, TMode } from 'shared/types'
 
 export interface TUltimateTicTacToeState {
     activeSegment: null | [number, number]
     segmentBoard: TTicTacToeBoard
     ultimateBoard: TTicTacToeBoard[][]
     side: TTicTacToeSide
+    opponentSide: TTicTacToeSide
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
     mode: TMode
@@ -18,13 +19,13 @@ export interface TUltimateTicTacToeState {
 }
 
 export type TUltimateTicTacToeAction =
-    { type: 'HOT_SEAT_MOVE', payload: { squareCOORD: [number, number], segmentCOORD: [number, number] } }
-    | { type: 'PLAY_AGAIN' }
+    { type: 'HOTSEAT_MOVE', payload: { squareCOORD: [number, number], segmentCOORD: [number, number] } }
+    | { type: 'RESET_BOARD' }
 
 const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeAction) => {
     let update: TUltimateTicTacToeState;
     switch (action.type) {
-        case 'HOT_SEAT_MOVE':
+        case 'HOTSEAT_MOVE':
             update = JSON.parse(JSON.stringify(prevState))
             const [x, y] = action.payload.squareCOORD
             const [z, w] = action.payload.segmentCOORD
@@ -45,14 +46,14 @@ const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeA
                 update.winner = 'draw'
                 update.score.draw += 1
             }
+            if (update.mode === 'hotseat') update.side = prevState.side === 'X' ? 'O' : 'X'
             if (update.segmentBoard[x][y] || checkForDrawTicTacToe(update.ultimateBoard[x][y])) update.activeSegment = null
             else update.activeSegment = [x, y]
-            update.side = prevState.side === 'X' ? 'O' : 'X'
             update.currentlyPlaying = prevState.currentlyPlaying === 'X' ? 'O' : 'X'
             return update
 
 
-        case 'PLAY_AGAIN':
+        case 'RESET_BOARD':
             update = { ...prevState }
             update.ultimateBoard = initializeUltimateTicTacToeBoard()
             update.segmentBoard = initializeTicTacToeBoard(3)

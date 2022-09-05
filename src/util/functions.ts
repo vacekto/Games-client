@@ -1,16 +1,22 @@
 import { TTicTacToeBoard } from "shared/types"
 
+export const initializeTicTacToeBoard = (size: number) => {
+    let state: any = [];
+    for (let i = 0; i < size; i++) {
+        state[i] = []
+        for (let j = 0; j < size; j++) {
+            state[i][j] = null
+        }
+    }
+    return state as TTicTacToeBoard
+}
+
 export const initializeUltimateTicTacToeBoard = () => {
-    const initQuadrants = Array(3).fill(Array(3).fill(null))
-    const initUltimateTicTacToeBoard: TTicTacToeBoard[][] = initQuadrants.map(quadrantRow => {
+    const initQuadrants = initializeTicTacToeBoard(3)
+    const initUltimateTicTacToeBoard = initQuadrants.map(quadrantRow => {
         return quadrantRow.map(() => {
-            return Array(3).fill(Array(3).fill(null))
+            return initializeTicTacToeBoard(3)
         })
     })
     return initUltimateTicTacToeBoard
-}
-
-export const initializeTicTacToeBoard = (size: number) => {
-    const initTicTacToeBoard: TTicTacToeBoard = Array(size).fill(Array(size).fill(null))
-    return initTicTacToeBoard
 }

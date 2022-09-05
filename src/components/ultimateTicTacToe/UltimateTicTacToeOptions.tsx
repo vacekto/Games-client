@@ -2,16 +2,18 @@ import './UltimateTicTacToeOptions.scss'
 import { Outlet } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 import Lobby from '../Lobby'
+import socket from 'src/util/socketInstance'
 
-interface IUltimateTicTacToeOptionsProps { }
+interface IUltimateTicTacToeOptionsProps {
+}
 
-const UltimateTicTacToeOptions: React.FC<IUltimateTicTacToeOptionsProps> = (props) => {
+const UltimateTicTacToeOptions: React.FC<IUltimateTicTacToeOptionsProps> = ({ }) => {
     let navigate = useNavigate();
 
     const handleClick = {
-        hotseat: () => { navigate("Board") },
+        hotseat: () => { navigate("hotseat") },
         vsPC: () => { },
-        back: () => { navigate("../") }
+        back: () => { console.log('test'); navigate("../") }
     }
 
     return <div className='ultimateTicTacToeOptions'>

@@ -2,11 +2,7 @@ import { TTicTacToeBoard } from "shared/types"
 
 export const checkForWinnerTicTacToe = (state: TTicTacToeBoard, move: [number, number], winCondition: number) => {
     const [x, y] = move
-    const player = state[x][y]
-    const size = state.length
-    let isWinner = false
-
-    if (player === null) return false
+    if (state[x][y] === null) return false
 
     const directions = [
         [
@@ -26,6 +22,10 @@ export const checkForWinnerTicTacToe = (state: TTicTacToeBoard, move: [number, n
             (move: [number, number], i: number) => [move[0] + i, move[1] - i],
         ]
     ]
+
+    const player = state[x][y]
+    const size = state.length
+    let isWinner = false
 
     const checkDirection = (count: { current: number }, direction: (move: [number, number], i: number) => number[]) => {
         for (let i = 1; i < winCondition; i++) {

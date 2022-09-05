@@ -1,25 +1,27 @@
 import './TicTacToeBoard.scss'
-import { useReducer, useEffect } from 'react'
+import { useReducer, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { TMode, TGameSide } from 'shared/types'
-import { initializeTicTacToeBoard } from '../../util/functions'
+import { TMode, TTicTacToeBoard } from 'shared/types'
+import { initializeTicTacToeBoard } from 'src/util/functions'
 import reducer from './TicTacToeReducer'
 import BoardHeader from '../BoardHeader'
 import BoardFooter from '../BoardFooter'
-import { Circle, Times } from './../../util/SVG'
-import socket from '../../util/socketInstance'
+import { Circle, Times } from 'src/util/SVG'
+import socket from 'src/util/socketInstance'
 interface ITicTacToeBoardProps {
   size?: number
-  side?: TGameSide
-  mode?: TMode
+  username: string
+  mode: TMode
 }
 
-const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', mode = 'hotseat' }) => {
+const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, username }) => {
   const params = useParams();
   const navigate = useNavigate();
+  const [oponentsWantsRematch, setOpponentWantsRematch] = useState<boolean>(false)
   const [state, dispatch] = useReducer(reducer, {
     board: initializeTicTacToeBoard(size),
-    side: side,
+    side: mode === 'multiplayer' ? params.side === 'X' ? 'X' : 'O' : 'X',
+    opponent: mode === 'multiplayer' ? params.side === 'X' ? 'O' : 'X' : 'O',
     currentlyPlaying: 'X',
     winner: null,
     mode: mode,
@@ -32,18 +34,29 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
 
 
   const handleSquareClick = (x: number, y: number) => {
-    if (state.board[x][y] !== null) return
     if (state.side !== state.currentlyPlaying) return
+    if (state.board[x][y] !== null) return
     if (state.winner) return
-    if (mode === 'multiplayer') {
-      //socket.emit('clientGameUpdate', state.board, [x, y])
-    } else {
-      dispatch({ type: 'HOT_SEAT_MOVE', payload: { COORD: [x, y] } })
+    if (state.mode === 'multiplayer') {
+      socket.emit('CLIENT_GAME_UPDATE', [x, y], state.side)
+    } else if (state.mode === 'hotseat') {
+      dispatch({ type: 'HOTSEAT_MOVE', payload: { COORD: [x, y] } })
     }
   }
 
   const handlePlayAgain = () => {
-    dispatch({ type: 'PLAY_AGAIN' })
+    if (mode === 'hotseat') dispatch({ type: 'NEW_GAME' })
+    if (mode === 'multiplayer') {
+      socket.emit('PLAY_AGAIN')
+    }
+  }
+
+  const handleQuit = () => {
+    if (state.mode === 'multiplayer') {
+      socket.emit('LEAVE_GAME')
+      socket.gameId = null
+    }
+    navigate("/")
   }
 
   const renderBoardValue = (value: 'X' | 'O' | null | 'draw') => {
@@ -53,27 +66,68 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
   }
 
   useEffect(() => {
-
-    if (params.mode === 'multiplayer' && socket.gameId !== params.gameId) navigate('/')
     if (mode === 'multiplayer') {
-      /*if (!socket.hasListeners('serverGameUpdate')) {
-        socket.on('serverGameUpdate', () => {
- 
+
+      if (!params.side || !['X', 'O'].includes(params.side)) navigate('/')
+      if (!socket.gameId || socket.gameId !== params.gameId) navigate('/')
+      if (!username || !params.opponentUsername) navigate('/')
+
+      if (!socket.hasListeners('SERVER_GAME_UPDATE')) {
+        socket.on('SERVER_GAME_UPDATE', (board) => {
+          console.log('game update', board)
+          dispatch({ type: 'MULTIPLAYER_MOVE', payload: board as TTicTacToeBoard })
         })
-      }*/
+      }
+      if (!socket.hasListeners('PLAYER_WON_GAME')) {
+        socket.on('PLAYER_WON_GAME', (side) => {
+          dispatch({ type: 'PLAYER_WON_GAME', payload: side })
+        })
+      }
+      if (!socket.hasListeners('NEW_GAME')) {
+        socket.on('NEW_GAME', () => {
+          dispatch({ type: 'NEW_GAME' })
+          setOpponentWantsRematch(false)
+        })
+      }
+      if (!socket.hasListeners('QUIT_GAME')) {
+        socket.on('QUIT_GAME', (msg) => {
+          console.error(msg)
+          navigate('/')
+        })
+      }
+
+      if (!socket.hasListeners('OPONENT_WANTS_TO_PLAY_AGAIN')) {
+        socket.on('OPONENT_WANTS_TO_PLAY_AGAIN', () => {
+          setOpponentWantsRematch(true)
+        })
+      }
+
+
+
     }
 
     return () => {
-      //socket.removeAllListeners('serverGameUpdate')
+      socket.emit('LEAVE_GAME')
+      socket.removeAllListeners('SERVER_GAME_UPDATE')
+      socket.removeAllListeners('PLAYER_WON_GAME')
+      socket.removeAllListeners('NEW_GAME')
+      socket.gameId = null
     }
 
   }, [])
+
 
   return <div className='ticTacToeBoard genericWholeScrean'>
     <div className="genericGameContainer">
 
       <div className="header">
-        <BoardHeader player1={state.score.X} player2={state.score.O} draw={state.score.draw} />
+        <BoardHeader
+          clientSide={state.side}
+          opponentSide={state.opponent}
+          score={{ ...state.score }}
+          opponentUsername={params.opponent!}
+          clientUsername={username}
+        />
       </div>
 
       <div className="board genericFlexColumn genericNoBorder">
@@ -93,10 +147,13 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, side = 'X', 
       </div>
 
       <div className='footer'>
+        <button onClick={() => { socket.emit('test') }}>click</button>
         <BoardFooter
           currentlyPlaying={state.currentlyPlaying}
           winner={state.winner}
           playAgainCallback={handlePlayAgain}
+          quitCallback={handleQuit}
+          oponentsWantsRematch={oponentsWantsRematch}
         />
       </div>
     </div>
