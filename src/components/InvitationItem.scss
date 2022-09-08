@@ -1,0 +1,44 @@
+.notificationItem {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    .message {
+        background-color: #fff;
+        z-index: 1;
+        cursor: pointer;
+        height: 70px;
+        padding: 5px;
+        border-bottom: 1px solid black;
+        box-sizing: border-box;
+    }
+
+    .message:hover {
+        background-color: #e0e0e0;
+    }
+
+    .responces {
+        width: 100%;
+        box-sizing: border-box;
+        z-index: -1;
+        position: absolute;
+        font-size: larger;
+        font-family: "Luckiest Guy";
+        height: 70px;
+        padding: 5px;
+        border-bottom: 1px solid black;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    .responceOption {
+        color: #2D3E50;
+        cursor: pointer;
+    }
+
+    .responceOption:hover {
+        font-size: larger;
+    }
+
+}

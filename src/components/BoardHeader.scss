@@ -4,6 +4,16 @@
     .sides {
         display: flex;
         justify-content: space-between;
+        margin-bottom: 10px;
+        .side {
+            display: flex;
+
+            div {
+                margin-right: 10px;
+                font-size: larger;
+                height: 30px;
+            }
+        }
     }
 
     .score {

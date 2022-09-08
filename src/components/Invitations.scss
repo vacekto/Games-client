@@ -1,0 +1,54 @@
+$crossSize: 30px;
+
+.invitations {
+    background-color: #fff;
+    z-index: 10;
+    left: -100%;
+    position: fixed;
+    width: 320px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid black;
+
+    .header {
+        height: 60px;
+        background-color: #2D3E50;
+        box-sizing: content-box;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        .exitCross {
+            position: relative;
+            width: $crossSize;
+            height: $crossSize;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            cursor: pointer;
+
+            div {
+                position: absolute;
+                background-color: #fff;
+                width: $crossSize;
+                height: 3px;
+                border-radius: 3px;
+            }
+
+            .line1 {
+                transform: rotate(45deg)
+            }
+
+            .line2 {
+                transform: rotate(315deg)
+            }
+        }
+    }
+
+}
+
+.show{
+    left: 0;
+}

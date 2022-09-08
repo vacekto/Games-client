@@ -1,14 +1,17 @@
 import './TicTacToeOptions.scss'
 import { Outlet } from 'react-router-dom'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { IUser } from 'shared/types'
 import Lobby from '../Lobby'
 import socket from 'src/util/socketInstance'
 
 interface ITicTacToeOptionsProps {
+    lobbyUsers: IUser[]
+    username: string
 }
 
-const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = (props) => {
+const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = ({ lobbyUsers, username }) => {
     const [searching, setSearching] = useState<boolean>(false)
     let navigate = useNavigate();
 
@@ -24,6 +27,13 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = (props) => {
         setSearching(prevState => !prevState)
     }
 
+    useEffect(() => {
+        socket.emit('JOIN_LOBBY')
+        return () => {
+            socket.emit('LEAVE_LOBBY')
+        }
+    }, [])
+
     return <div className='ticTacToeOptions'>
         <div className='genericOptionsContainer'>
             <div className='genericOptions'>
@@ -35,7 +45,7 @@ const TicTacToeOptions: React.FC<ITicTacToeOptionsProps> = (props) => {
                 <button className="genericButton optionsButton" onClick={handleClick.back}>Back</button>
             </div>
         </div>
-        <Lobby />
+        <Lobby lobbyUsers={lobbyUsers} username={username} gameName='ticTacToe' />
         <Outlet />
     </div>;
 };

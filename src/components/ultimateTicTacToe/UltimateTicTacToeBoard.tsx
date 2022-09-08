@@ -107,7 +107,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, 
     return <div className='ultimateTicTacToeBoard genericWholeScrean'>
         <div className='genericGameContainer'>
             <div className="header">
-                <BoardHeader clientSide={state.side} opponentSide={state.opponentSide} clientUsername={username} opponentUsername={params.opponentUsername!} score={{ ...state.score }} />
+                <BoardHeader clientSide={state.side} clientUsername={username} opponentUsername={params.opponentUsername!} score={{ ...state.score }} mode={mode} />
             </div>
             <div className="board genericFlexColumn">
                 {renderSegmentBoard()}

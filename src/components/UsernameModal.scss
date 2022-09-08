@@ -129,18 +129,17 @@
 
         }
 
-        .error {
+        .outcome {
             display: inline-block;
             position: absolute;
             box-sizing: border-box;
             font-size: smaller;
-            border: 3px solid rgb(255, 58, 58);
             border-radius: 15px;
-            color: rgb(255, 58, 58);
-            background-color: rgb(255, 238, 238);
+            color: black;
             margin-right: 40px;
             padding: 12px;
             height: 80px;
+            width: auto;
         }
 
         .exit {

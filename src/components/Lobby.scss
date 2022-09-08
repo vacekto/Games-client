@@ -1,19 +1,27 @@
 .lobby {
     height: 100%;
-    width: 300px;
-    outline: 1px solid red;
+    width: 320px;
+    border-left: 1px solid black;
 
     .header {
         font-size: large;
+        border-bottom: 1px solid black;
     }
 
     .item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 60px;
-        border: 1px solid black;
-        padding: 0 10px;
+        height: 70px;
+        padding: 0 20px;
         
+        .username{
+            font-size: larger;
+        }
+
+        button {
+            height: 30px;
+            width: 60px;
+        }
     }
 }

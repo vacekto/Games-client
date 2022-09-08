@@ -16,13 +16,25 @@
     justify-content: space-between;
     font-size: larger;
 
-    .menu{
+    .left,
+    .right {
+      display: flex;
+    }
+
+    .menu {
       cursor: pointer;
     }
 
     .username {
       cursor: pointer;
       margin-right: 10px;
+      display: flex;
+
+      .placeholder {}
+
+      .value {
+        margin-left: 30px;
+      }
     }
   }
 }

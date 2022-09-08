@@ -2,18 +2,21 @@ import './UltimateTicTacToeOptions.scss'
 import { Outlet } from 'react-router-dom'
 import { useNavigate } from "react-router-dom";
 import Lobby from '../Lobby'
+import { IUser } from 'shared/types'
 import socket from 'src/util/socketInstance'
 
 interface IUltimateTicTacToeOptionsProps {
+    lobbyUsers: IUser[]
+    username: string
 }
 
-const UltimateTicTacToeOptions: React.FC<IUltimateTicTacToeOptionsProps> = ({ }) => {
+const UltimateTicTacToeOptions: React.FC<IUltimateTicTacToeOptionsProps> = ({ lobbyUsers, username }) => {
     let navigate = useNavigate();
 
     const handleClick = {
         hotseat: () => { navigate("hotseat") },
         vsPC: () => { },
-        back: () => { console.log('test'); navigate("../") }
+        back: () => { navigate("../") }
     }
 
     return <div className='ultimateTicTacToeOptions'>
@@ -31,7 +34,7 @@ const UltimateTicTacToeOptions: React.FC<IUltimateTicTacToeOptionsProps> = ({ })
                 </button>
             </div>
         </div>
-        <Lobby />
+        <Lobby lobbyUsers={lobbyUsers} username={username} gameName='ultimateTicTacToe' />
         <Outlet />
     </div >;
 };

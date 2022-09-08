@@ -5,7 +5,7 @@ import { TTicTacToeBoard, TTicTacToeSide, TMode } from 'shared/types'
 interface TTicTacToeState {
     board: TTicTacToeBoard
     side: TTicTacToeSide
-    opponent: TTicTacToeSide
+    opponentUsername: string
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
     mode: TMode

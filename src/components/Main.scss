@@ -1,7 +1,7 @@
 @import '../util/CSS/variables.scss';
 
 .main {
-    height: 100%;
+    flex-grow: 1;
     width: 100%;
     display: flex;
     justify-content: space-evenly;

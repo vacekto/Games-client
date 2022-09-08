@@ -1,24 +1,34 @@
 import './Lobby.scss'
-import { useState } from 'react'
+import { IUser, TGameName } from 'shared/types'
+import socket from 'src/util/socketInstance'
+
 
 interface ILobbyProps {
-
+  lobbyUsers: IUser[]
+  username: string
+  gameName: TGameName
 }
 
-const Lobby: React.FC<ILobbyProps> = (props) => {
-  const [users, setUsers] = useState([{ id: '1', username: 'user1' }, { id: '2', username: 'user2' }])
+const Lobby: React.FC<ILobbyProps> = ({ lobbyUsers, username, gameName }) => {
+  console.log('lobby render')
+  const handleInviteClick = (inviteeId: string) => {
+    socket.emit('INVITE_USER_TO_GAME', gameName, inviteeId)
+  }
 
-  return <div className='lobby'>
-    <div className="header item">Users online</div>
-    {users.map(user => {
+  const renderUsers = () => {
+    return lobbyUsers.filter(user => user.username !== username).map(user => {
       return <div key={user.id} className='item'>
         <div className="username">
           {user.username}
         </div>
-        <button className='genericButton'>invite</button>
-
+        <button className='genericButton' onClick={() => { handleInviteClick(user.id) }}>invite</button>
       </div>
-    })}
+    })
+  }
+
+  return <div className='lobby'>
+    <div className="header item">Users online</div>
+    {renderUsers()}
   </div>
 }
 

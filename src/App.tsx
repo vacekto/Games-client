@@ -2,6 +2,7 @@ import './App.scss';
 import './util/CSS/classes.scss'
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useState, useEffect } from 'react';
+import { IUser } from 'shared/types';
 import Main from './components/Main';
 import TicTacToeOptions from './components/TicTacToe/TicTacToeOptions'
 import TicTacToeBoard from './components/TicTacToe/TicTacToeBoard';
@@ -9,81 +10,117 @@ import UltimateTicTacToeOptions from './components/ultimateTicTacToe/UltimateTic
 import UltimateTicTacToeBoard from './components/ultimateTicTacToe/UltimateTicTacToeBoard';
 import UsernameModal from './components/UsernameModal';
 import CustomSwitch from './components/CustomSwitch';
+import Invitations from './components/Invitations'
 import socket from 'src/util/socketInstance'
 
 
 function App() {
-  const [username, setUsername] = useState<string | null>(null)
-  const [displayModal, setDisplayModal] = useState<boolean>(false)
   const navigate = useNavigate();
+  const [username, setUsername] = useState<string | null>(localStorage.getItem('username'))
+  const [displayUsernameModal, setDisplayUsernameModal] = useState<boolean>(!Boolean(localStorage.getItem('username')))
+  const [displayInvitations, setDisplayInvitations] = useState<boolean>(false)
+  const [lobby, setLobby] = useState<IUser[]>([])
 
   const test = () => {
     socket.emit('test')
   }
 
-  const toggleModal = () => {
-    setDisplayModal(prevState => prevState ? false : true)
+  const consoleOut = () => {
+    console.log('test: ' + socket.listeners("test"))
+    console.log('START_GAME: ' + socket.listeners("START_GAME"))
   }
 
-  const handleSubmitUsername = (username: string, remember: boolean) => {
-    setUsername(username)
-    if (remember) localStorage.setItem('username', username)
-    else localStorage.removeItem('username')
+  const toggleInvitations = () => setDisplayInvitations(!displayInvitations)
+  const toggleUsernameModal = () => setDisplayUsernameModal(!displayUsernameModal)
+  const handleSubmitUsername = (newUsername: string, remember: boolean) => {
+    setUsername(newUsername)
+    if (remember) localStorage.setItem('username', newUsername)
   }
 
   useEffect(() => {
-    const username = localStorage.getItem('username')
-    if (username) setUsername(username)
-    else setDisplayModal(true)
-    if (!socket.hasListeners('STAR_GAME')) {
-      socket.on('STAR_GAME', (gameId, gameName, side, opponentUsername) => {
+    if (username) {
+      socket.emit('SET_USERNAME', username.trim(), (response => {
+        if (response.error) {
+          setUsername(null)
+          setDisplayUsernameModal(true)
+        }
+        else {
+          setUsername(username)
+          setDisplayUsernameModal(false)
+        }
+      }))
+    }
+
+    if (!socket.hasListeners('START_GAME')) {
+      socket.on('START_GAME', (gameId, gameName, side, opponentUsername) => {
+        console.log('game started')
         socket.gameId = gameId
-        navigate(`${gameName}/multiplayer/${side}/${gameId}/${opponentUsername}`)
+        navigate(`${gameName}/multiplayer/${gameId}/${side}/${opponentUsername}`)
+      })
+    }
+
+
+    if (!socket.hasListeners('LOBBY_UPDATE')) {
+      socket.on('LOBBY_UPDATE', (lobby) => {
+        
+        console.log('lobby update ' + lobby)
+        setLobby(lobby)
       })
     }
 
     socket.on('test', () => {
       console.log('testing')
     })
-
-    return () => {
-      socket.removeAllListeners()
-    }
+    socket.emit('JOIN_LOBBY')
   }, [])
 
   useEffect(() => {
     if (!username) {
-      setDisplayModal(true)
+      setDisplayUsernameModal(true)
     }
   })
 
   return (
     <div className="App">
+
+      <Invitations show={displayInvitations} toggleShow={toggleInvitations} />
+
       <div className='appHeader'>
-        <div className='menu' onClick={() => navigate("/")}>Menu</div>
-        <button onClick={test}>click</button>
-        <div
-          className="username"
-          onClick={toggleModal}
-        >
-          Username:{username}
+        <div className="left">
+          <div className='menu' onClick={toggleInvitations}>Game invitations</div>
+          {/*<div className='menu' onClick={() => navigate("/")}>Menu</div>*/}
+          <button onClick={test}>test</button>
+          <button onClick={consoleOut}>consoleOUT</button>
+        </div>
+        <div className="right">
+          <div
+            className="username"
+            onClick={toggleUsernameModal}
+          >
+            <div className='placeholder' >username:</div>
+            <div className='value'>{username}</div>
+
+          </div>
         </div>
       </div>
+
       <Routes>
-        <Route path='/TicTacToe' element={<TicTacToeOptions />} >
+        <Route path='/TicTacToe' element={<TicTacToeOptions lobbyUsers={lobby} username={username!} />} >
           <Route path='hotseat' element={<TicTacToeBoard mode={'hotseat'} username={username!} />} />
-          <Route path='multiplayer/:side/:gameId/:opponentSide' element={<TicTacToeBoard mode={'multiplayer'} username={username!} />} />
+          <Route path='multiplayer/:gameId/:side/:opponentUsername' element={<TicTacToeBoard mode={'multiplayer'} username={username!} />} />
         </Route>
-        <Route path="/UltimateTicTacToe/" element={<UltimateTicTacToeOptions />} >
+        <Route path="/UltimateTicTacToe/" element={<UltimateTicTacToeOptions lobbyUsers={lobby} username={username!} />} >
           <Route path="hotseat" element={<UltimateTicTacToeBoard mode={'hotseat'} username={username!} />} />
-          <Route path="multiplayer/:side/:gameId/:opponentSide" element={<UltimateTicTacToeBoard mode={'multiplayer'} username={username!} />} />
+          <Route path="multiplayer/:gameId/:side/:opponentUsername" element={<UltimateTicTacToeBoard mode={'multiplayer'} username={username!} />} />
         </Route>
         <Route path="/Chess" element={<CustomSwitch moving='X' />} >
           <Route path='Board' element={<CustomSwitch moving='O' />} />
         </Route>
         <Route path='*' element={<Main />} />
       </Routes>
-      <UsernameModal showModal={displayModal} exitModal={toggleModal} submit={handleSubmitUsername} />
+
+      <UsernameModal show={displayUsernameModal} exitModal={toggleUsernameModal} submit={handleSubmitUsername} />
+
     </div >
   );
 }
