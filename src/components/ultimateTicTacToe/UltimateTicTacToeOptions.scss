@@ -1,7 +1,7 @@
 .ultimateTicTacToeOptions {
     display: flex;
-    height: 100%;
-    .gName{
+    flex-grow: 1;
+    .gameName{
     }
     .genericButton {
         a {

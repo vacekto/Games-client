@@ -21,15 +21,6 @@ function App() {
   const [displayInvitations, setDisplayInvitations] = useState<boolean>(false)
   const [lobby, setLobby] = useState<IUser[]>([])
 
-  const test = () => {
-    socket.emit('test')
-  }
-
-  const consoleOut = () => {
-    console.log('test: ' + socket.listeners("test"))
-    console.log('START_GAME: ' + socket.listeners("START_GAME"))
-  }
-
   const toggleInvitations = () => setDisplayInvitations(!displayInvitations)
   const toggleUsernameModal = () => setDisplayUsernameModal(!displayUsernameModal)
   const handleSubmitUsername = (newUsername: string, remember: boolean) => {
@@ -62,7 +53,7 @@ function App() {
 
     if (!socket.hasListeners('LOBBY_UPDATE')) {
       socket.on('LOBBY_UPDATE', (lobby) => {
-        
+
         console.log('lobby update ' + lobby)
         setLobby(lobby)
       })
@@ -80,7 +71,7 @@ function App() {
     }
   })
 
-  return (
+  return (<div className="appContainer">
     <div className="App">
 
       <Invitations show={displayInvitations} toggleShow={toggleInvitations} />
@@ -88,9 +79,6 @@ function App() {
       <div className='appHeader'>
         <div className="left">
           <div className='menu' onClick={toggleInvitations}>Game invitations</div>
-          {/*<div className='menu' onClick={() => navigate("/")}>Menu</div>*/}
-          <button onClick={test}>test</button>
-          <button onClick={consoleOut}>consoleOUT</button>
         </div>
         <div className="right">
           <div
@@ -122,6 +110,7 @@ function App() {
       <UsernameModal show={displayUsernameModal} exitModal={toggleUsernameModal} submit={handleSubmitUsername} />
 
     </div >
+  </div>
   );
 }
 

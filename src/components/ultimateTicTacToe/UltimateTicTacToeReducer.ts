@@ -1,13 +1,13 @@
 import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from 'src/util/gameLogic'
 import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from 'src/util/functions'
-import { TTicTacToeBoard, TTicTacToeSide, TMode } from 'shared/types'
+import { TTicTacToeBoard, TTicTacToeSide, TMode, TUltimateTiTacTocBoard, TGameSide } from 'shared/types'
 
 export interface TUltimateTicTacToeState {
     activeSegment: null | [number, number]
     segmentBoard: TTicTacToeBoard
     ultimateBoard: TTicTacToeBoard[][]
     side: TTicTacToeSide
-    opponentSide: TTicTacToeSide
+    opponentUsername: string
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
     mode: TMode
@@ -19,8 +19,21 @@ export interface TUltimateTicTacToeState {
 }
 
 export type TUltimateTicTacToeAction =
-    { type: 'HOTSEAT_MOVE', payload: { squareCOORD: [number, number], segmentCOORD: [number, number] } }
-    | { type: 'RESET_BOARD' }
+    {
+        type: 'HOTSEAT_MOVE', payload: {
+            squareCOORD: [number, number],
+            segmentCOORD: [number, number]
+        }
+    }
+    | {
+        type: 'MULTIPLAYER_MOVE', payload: {
+            ultimateBoard: TUltimateTiTacTocBoard,
+            segmentBoard: TTicTacToeBoard
+            lastMoveCOORD: [number, number]
+        }
+    }
+    | { type: 'PLAYER_WON_GAME', payload: { side: TGameSide | 'draw' } }
+    | { type: 'NEW_GAME' }
 
 const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeAction) => {
     let update: TUltimateTicTacToeState;
@@ -46,21 +59,35 @@ const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeA
                 update.winner = 'draw'
                 update.score.draw += 1
             }
-            if (update.mode === 'hotseat') update.side = prevState.side === 'X' ? 'O' : 'X'
+            update.side = prevState.side === 'X' ? 'O' : 'X'
             if (update.segmentBoard[x][y] || checkForDrawTicTacToe(update.ultimateBoard[x][y])) update.activeSegment = null
             else update.activeSegment = [x, y]
             update.currentlyPlaying = prevState.currentlyPlaying === 'X' ? 'O' : 'X'
             return update
 
+        case 'MULTIPLAYER_MOVE':
+            update = JSON.parse(JSON.stringify(prevState))
+            update.ultimateBoard = action.payload.ultimateBoard
+            update.segmentBoard = action.payload.segmentBoard
+            const [u, v] = action.payload.lastMoveCOORD
+            if (update.segmentBoard[u][v]) update.activeSegment = null
+            else update.activeSegment = [u, v]
+            update.currentlyPlaying = (prevState.currentlyPlaying === "X" ? 'O' : 'X')
+            return update
 
-        case 'RESET_BOARD':
+        case 'NEW_GAME':
             update = { ...prevState }
             update.ultimateBoard = initializeUltimateTicTacToeBoard()
             update.segmentBoard = initializeTicTacToeBoard(3)
             update.winner = null
             update.activeSegment = null
-            update.side = prevState.side === 'X' ? 'O' : 'X'
-            update.currentlyPlaying = prevState.currentlyPlaying === 'X' ? 'O' : 'X'
+            return update
+
+
+        case 'PLAYER_WON_GAME':
+            update = JSON.parse(JSON.stringify(prevState))
+            update.winner = action.payload.side
+            update.score[action.payload.side] += 1
             return update
 
         default:

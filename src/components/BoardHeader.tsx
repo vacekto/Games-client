@@ -1,7 +1,6 @@
 import './BoardHeader.scss'
 import { Circle, Times, Scales } from '../util/SVG'
-import { TGameName, TGameSide, TMode } from 'shared/types'
-import { useRef } from 'react'
+import { TGameSide, TMode } from 'shared/types'
 
 interface IBoardHeaderProps {
     clientSide: TGameSide
@@ -39,7 +38,7 @@ const BoardHeader: React.FC<IBoardHeaderProps> = ({ clientSide, clientUsername, 
                 <div className='sideIcon'>{clientIcon[clientSide]}</div>
             </div>
             <div className="side">
-                <div>{opponentUsername ? opponentUsername : null}</div>
+                <div>{opponentUsername ? `${opponentUsername}: ` : null}</div>
                 <div className='sideIcon'>{opponentUsername ? renderOpponentIcon() : null}</div>
             </div>
         </div>

@@ -59,12 +59,6 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
     navigate("/")
   }
 
-  const renderBoardValue = (value: 'X' | 'O' | null | 'draw') => {
-    if (value === 'X') return <Times />
-    if (value === 'O') return <Circle />
-    return null
-  }
-
   useEffect(() => {
     if (mode === 'multiplayer') {
       if (!params.side || !['X', 'O'].includes(params.side)) navigate('/')
@@ -101,6 +95,8 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
       }
     }
 
+    socket.emit('LEAVE_LOBBY')
+
     return () => {
       socket.emit('LEAVE_GAME')
       socket.removeAllListeners('SERVER_GAME_UPDATE')
@@ -109,9 +105,16 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
       socket.removeAllListeners('QUIT_GAME')
       socket.removeAllListeners('OPONENT_WANTS_TO_PLAY_AGAIN')
       socket.gameId = null
+      socket.emit('JOIN_LOBBY')
     }
 
   }, [])
+
+  const renderBoardValue = (value: 'X' | 'O' | null | 'draw') => {
+    if (value === 'X') return <Times />
+    if (value === 'O') return <Circle />
+    return null
+  }
 
 
   return <div className='ticTacToeBoard genericWholeScrean'>
@@ -144,7 +147,6 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
       </div>
 
       <div className='footer'>
-        <button onClick={() => { socket.emit('test') }}>click</button>
         <BoardFooter
           currentlyPlaying={state.currentlyPlaying}
           winner={state.winner}

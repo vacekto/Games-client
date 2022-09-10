@@ -1,9 +1,10 @@
 $crossSize: 30px;
 
 .invitations {
+    transition: left 0.5s;
     background-color: #fff;
     z-index: 10;
-    left: -100%;
+    left: -320px;
     position: fixed;
     width: 320px;
     height: 100%;
@@ -11,13 +12,44 @@ $crossSize: 30px;
     flex-direction: column;
     border-right: 1px solid black;
 
+
+    .list::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .list::-webkit-scrollbar-track {
+        background-color: #2d3e5046;
+        border-radius: 100px;
+    }
+
+    .list::-webkit-scrollbar-thumb {
+        background-color: #2D3E50;
+        border-radius: 100px;
+    }
+
+    .list {
+        overflow: auto;
+
+        .mockInvitation {
+            height: 70px;
+            width: 100%;
+        }
+    }
+
     .header {
+        padding: 0 20px;
+        color: #fff;
+        font-size: large;
         height: 60px;
         background-color: #2D3E50;
         box-sizing: content-box;
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
         align-items: center;
+
+        .clearAll {
+            cursor: pointer;
+        }
 
         .exitCross {
             position: relative;
@@ -26,7 +58,6 @@ $crossSize: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-right: 20px;
             cursor: pointer;
 
             div {
@@ -49,6 +80,6 @@ $crossSize: 30px;
 
 }
 
-.show{
+.show {
     left: 0;
 }

@@ -28,7 +28,10 @@ const Lobby: React.FC<ILobbyProps> = ({ lobbyUsers, username, gameName }) => {
 
   return <div className='lobby'>
     <div className="header item">Users online</div>
-    {renderUsers()}
+    <div className="list">
+      {renderUsers()}
+
+    </div>
   </div>
 }
 

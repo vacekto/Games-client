@@ -1,11 +1,17 @@
+.move {
+    top: 70px;
+}
+
+
 .notificationItem {
     display: flex;
     flex-direction: column;
     position: relative;
 
+
     .message {
         background-color: #fff;
-        z-index: 1;
+        z-index: 10;
         cursor: pointer;
         height: 70px;
         padding: 5px;
@@ -20,7 +26,7 @@
     .responces {
         width: 100%;
         box-sizing: border-box;
-        z-index: -1;
+        z-index: 5;
         position: absolute;
         font-size: larger;
         font-family: "Luckiest Guy";

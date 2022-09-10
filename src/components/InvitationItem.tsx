@@ -5,11 +5,13 @@ import socket from 'src/util/socketInstance'
 
 interface IInvitationItemProps {
     item: IInvitationItem
-    deleteItem: (senderId: string) => void
+    deleteItem: () => void
+    extendItem: () => void
+    indented: boolean
+    extended: boolean
 }
 
-const InvitationItem: React.FC<IInvitationItemProps> = ({ item, deleteItem }) => {
-    const [extendItem, setExtendItem] = useState<boolean>(false)
+const InvitationItem: React.FC<IInvitationItemProps> = ({ item, deleteItem, indented, extended, extendItem }) => {
     const [message, setMessage] = useState<'error' | 'default'>('default')
 
     const gameName = {
@@ -27,21 +29,17 @@ const InvitationItem: React.FC<IInvitationItemProps> = ({ item, deleteItem }) =>
             setMessage('error')
         })
         setTimeout(() => {
-            deleteItem(item.senderId)
-        }, 5000)
+            deleteItem()
+        }, 500)
     }
 
-    const handleRefuse = () => {
-        deleteItem(item.senderId)
-    }
-
-    return <div className='notificationItem'>
-        <div className="message" onClick={() => setExtendItem(!extendItem)} >
+    return <div className={`notificationItem ${indented ? 'move' : ''}`} >
+        <div className="message" onClick={extendItem} >
             {messageOptions[message]}
         </div>
-        <div className="responces" style={{ top: extendItem ? '70px' : '0px' }} >
+        <div className={`responces  ${extended ? 'move' : ''}`} >
             <div className="accept responceOption" onClick={handleAccept}>Accept</div>
-            <div className="refuse responceOption" onClick={handleRefuse}>Refuse</div>
+            <div className="refuse responceOption" onClick={deleteItem}>Refuse</div>
         </div>
     </div >;
 };
