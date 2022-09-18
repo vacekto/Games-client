@@ -1,0 +1,52 @@
+$SQUARE_SIZE: 70px;
+
+.chessBoard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+
+    .header {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
+    .board {
+        border: 3px solid black;
+
+        .row {
+            display: flex;
+
+            .square {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: $SQUARE_SIZE;
+                height: $SQUARE_SIZE;
+                background-color: #EBEEF5;
+                border: 1px solid black;
+
+
+            }
+
+            .dark {
+                background-color: #90A2AC
+            }
+
+            .highlightAttack {
+                background-color: rgb(255, 196, 196);
+            }
+
+            .highlightNoAttack {
+                background-color: rgb(255, 255, 193);
+            }
+        }
+
+    }
+
+
+    .footer {
+        margin-top: 20px;
+        width: 100%;
+    }
+}

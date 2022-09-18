@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './UsernameModal.scss'
 import socket from 'src/util/socketInstance'
 import { exit } from 'process';
@@ -15,7 +15,7 @@ const UsernameModal: React.FC<IUsernameModalProps> = ({ submit, exitModal, show 
   const [outcomeMessage, setOutcomeMessage] = useState<string>('')
   const [rememberUsername, setRememberUsername] = useState<boolean>(false);
   const [outcome, setOutcome] = useState<'error' | 'success'>('error')
-
+  const inputRef = useRef<HTMLInputElement>(null)
   const outcomeStyles = {
     error: {
       display: displayMessage ? 'block' : 'none',
@@ -46,6 +46,10 @@ const UsernameModal: React.FC<IUsernameModalProps> = ({ submit, exitModal, show 
     exitModal()
   }
 
+  useEffect(() => {
+    inputRef.current!.focus();
+  }, [])
+
   return (
     <div className='usernameModal genericWholeScrean' style={{ display: show ? 'flex' : 'none' }} onClick={exitModal}>
       <div className="formContainer" onClick={(e) => { e.stopPropagation() }}>
@@ -54,6 +58,7 @@ const UsernameModal: React.FC<IUsernameModalProps> = ({ submit, exitModal, show 
         </div>
         <div className='usernameInput'>
           <input
+            ref={inputRef}
             type="text"
             value={usernameValue}
             onChange={(e) => setUsernameValue(e.target.value)}

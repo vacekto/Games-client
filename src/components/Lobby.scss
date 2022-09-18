@@ -2,6 +2,11 @@
     height: 100%;
     width: 320px;
     border-left: 1px solid black;
+    background-color: #fff;
+
+    @media (max-width: 700px) {
+        display: none;
+    }
 
     .header {
         font-size: large;
@@ -34,8 +39,11 @@
         height: 70px;
         padding: 0 20px;
 
+
         .username {
             font-size: larger;
+            max-width: 180px;
+            overflow: hidden;
         }
 
         button {
@@ -43,5 +51,15 @@
             width: 60px;
         }
     }
+}
 
+.lobby-resize {
+    @media (max-width:700px) {
+        display: inline-block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        box-sizing: border-box;
+    }
 }

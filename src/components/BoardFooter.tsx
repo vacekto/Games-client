@@ -1,13 +1,14 @@
 import './BoardFooter.scss'
-import { TGameSide } from 'shared/types'
+import { TGameName, TGameSide } from 'shared/types'
 import CustomSwitch from './CustomSwitch'
 
 interface IBoardFooterProps {
   currentlyPlaying: TGameSide
-  winner: 'X' | 'O' | null | 'draw'
+  winner: 'X' | 'O' | 'black' | 'white' | null | 'draw'
   playAgainCallback: () => void
   quitCallback: () => void
   oponentsWantsRematch: boolean
+  gameName: TGameName
 }
 
 const BoardFooter: React.FC<IBoardFooterProps> = ({
@@ -15,8 +16,9 @@ const BoardFooter: React.FC<IBoardFooterProps> = ({
   winner,
   playAgainCallback,
   quitCallback,
-  oponentsWantsRematch }) => {
-
+  oponentsWantsRematch,
+  gameName
+}) => {
   const renderWinner = () => {
     if (oponentsWantsRematch) return <div>
       Your opponent wants to play again!
@@ -31,7 +33,7 @@ const BoardFooter: React.FC<IBoardFooterProps> = ({
 
   return <div className='boardFooter'>
     <div className="switch">
-      <CustomSwitch moving={currentlyPlaying} />
+      <CustomSwitch moving={currentlyPlaying} gameName={gameName} />
     </div >
     <div className={`resultNotice ${winner ? 'show' : 'hide'}`}>
       {renderWinner()}

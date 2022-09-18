@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { TicTacToePicture } from 'src/util/SVG';
+import { TicTacToePicture } from 'src/util/SVG/Components';
 import { useNavigate } from "react-router-dom";
 import './Main.scss'
 
@@ -12,7 +12,9 @@ const Main: React.FC<IMainProps> = (props) => {
 
   const handleClick = {
     TicTacToe: () => { navigate('/TicTacToe') },
-    ultimateTicTacToe: () => { navigate('/UltimateTicTacToe') }
+    UltimateTicTacToe: () => { navigate('/UltimateTicTacToe') },
+    Chess: () => { navigate('/chess') }
+
   }
   return <div className='main'>
     <div className="relative">
@@ -28,7 +30,7 @@ const Main: React.FC<IMainProps> = (props) => {
       </div>
     </div>
     <div className="relative">
-      <div className='svgOptionContainer' onClick={handleClick.ultimateTicTacToe}>
+      <div className='svgOptionContainer' onClick={handleClick.UltimateTicTacToe}>
         <div className="svgOption">
           <TicTacToePicture />
         </div>
@@ -39,8 +41,17 @@ const Main: React.FC<IMainProps> = (props) => {
         </div>
       </div>
     </div>
-    <div>
-      <Link className="genericRouterLink" to='/Chess/Board'>Chess</Link>
+    <div className="relative">
+      <div className='svgOptionContainer' onClick={handleClick.Chess}>
+        <div className="svgOption">
+          <TicTacToePicture />
+        </div>
+        <div className='gameName'>
+          <div>
+            Chess
+          </div>
+        </div>
+      </div>
     </div>
   </div>;
 };

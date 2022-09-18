@@ -7,10 +7,10 @@ interface ILobbyProps {
   lobbyUsers: IUser[]
   username: string
   gameName: TGameName
+  displaySmallerLobby: boolean
 }
 
-const Lobby: React.FC<ILobbyProps> = ({ lobbyUsers, username, gameName }) => {
-  console.log('lobby render')
+const Lobby: React.FC<ILobbyProps> = ({ lobbyUsers, username, gameName, displaySmallerLobby }) => {
   const handleInviteClick = (inviteeId: string) => {
     socket.emit('INVITE_USER_TO_GAME', gameName, inviteeId)
   }
@@ -26,7 +26,7 @@ const Lobby: React.FC<ILobbyProps> = ({ lobbyUsers, username, gameName }) => {
     })
   }
 
-  return <div className='lobby'>
+  return <div className={`lobby ${displaySmallerLobby ? 'lobby-resize' : ''}`}>
     <div className="header item">Users online</div>
     <div className="list">
       {renderUsers()}

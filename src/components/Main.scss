@@ -8,14 +8,18 @@
     align-items: center;
     font-family: "Luckiest Guy";
 
+    @media (max-width:700px) {
+        flex-direction: column;
+    }
+
     .relative {
         position: relative;
+        margin: 150px;
 
         .svgOptionContainer {
             position: absolute;
             top: calc(-1 * $OPTION_ICON_SIZE/2);
             left: calc(-1 * $OPTION_ICON_SIZE/2);
-            border: 1px solid black;
             width: $OPTION_ICON_SIZE;
             height: $OPTION_ICON_SIZE;
             display: flex;
@@ -43,12 +47,12 @@
                 height: 100%;
 
 
-                svg {
-                    border: 1px solid black;
+                img {
                     border-top-left-radius: 20px;
                     border-top-right-radius: 20px;
                     width: 100%;
                     height: auto;
+                    padding-right: 2px;
                 }
 
                 svg:first-child {
@@ -68,3 +72,4 @@
         }
     }
 }
+

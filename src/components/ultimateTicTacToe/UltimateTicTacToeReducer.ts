@@ -1,6 +1,6 @@
-import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from 'src/util/gameLogic'
-import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from 'src/util/functions'
-import { TTicTacToeBoard, TTicTacToeSide, TMode, TUltimateTiTacTocBoard, TGameSide } from 'shared/types'
+import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from 'src/util/ticTacToeLogic'
+import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from 'src/util/ticTacToeLogic'
+import { TTicTacToeBoard, TGameMode, TUltimateTiTacTocBoard, TTicTacToeSide } from 'shared/types'
 
 export interface TUltimateTicTacToeState {
     activeSegment: null | [number, number]
@@ -10,7 +10,7 @@ export interface TUltimateTicTacToeState {
     opponentUsername: string
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
-    mode: TMode
+    mode: TGameMode
     score: {
         X: number
         O: number
@@ -32,14 +32,13 @@ export type TUltimateTicTacToeAction =
             lastMoveCOORD: [number, number]
         }
     }
-    | { type: 'PLAYER_WON_GAME', payload: { side: TGameSide | 'draw' } }
+    | { type: 'PLAYER_WON_GAME', payload: TTicTacToeSide | 'draw' }
     | { type: 'NEW_GAME' }
 
 const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeAction) => {
-    let update: TUltimateTicTacToeState;
+    let update = { ...prevState }
     switch (action.type) {
         case 'HOTSEAT_MOVE':
-            update = JSON.parse(JSON.stringify(prevState))
             const [x, y] = action.payload.squareCOORD
             const [z, w] = action.payload.segmentCOORD
             update.ultimateBoard[z][w][x][y] = prevState.currentlyPlaying
@@ -66,7 +65,6 @@ const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeA
             return update
 
         case 'MULTIPLAYER_MOVE':
-            update = JSON.parse(JSON.stringify(prevState))
             update.ultimateBoard = action.payload.ultimateBoard
             update.segmentBoard = action.payload.segmentBoard
             const [u, v] = action.payload.lastMoveCOORD
@@ -85,9 +83,8 @@ const reducer = (prevState: TUltimateTicTacToeState, action: TUltimateTicTacToeA
 
 
         case 'PLAYER_WON_GAME':
-            update = JSON.parse(JSON.stringify(prevState))
-            update.winner = action.payload.side
-            update.score[action.payload.side] += 1
+            update.winner = action.payload
+            update.score[action.payload] += 1
             return update
 
         default:

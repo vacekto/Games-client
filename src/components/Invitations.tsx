@@ -17,14 +17,10 @@ const Invitations: React.FC<IInvitationsProps> = ({ show, toggleShow }) => {
     setGameInvitations([])
   }
 
-  const test = () => {
-    console.log(gameIntivations)
-  }
-
   const deleteItem = (senderId: string) => () => {
     setGameInvitations((prevState) => {
       const invitations = prevState.filter(item => item.senderId !== senderId)
-      return JSON.parse(JSON.stringify(invitations))
+      return structuredClone(invitations)
     })
     setExtendedIndex(null)
   }
@@ -36,7 +32,7 @@ const Invitations: React.FC<IInvitationsProps> = ({ show, toggleShow }) => {
 
   useEffect(() => {
     setGameInvitations(prevState => {
-      let update = JSON.parse(JSON.stringify(prevState)) as IInvitationItem[]
+      let update = structuredClone(prevState) as IInvitationItem[]
       if (extendedIndex !== null) {
         if (gameIntivations.at(-1)?.senderId === 'mockInvitation') return prevState
         update.push({ senderUsername: '', senderId: 'mockInvitation', gameName: 'ticTacToe' })
@@ -48,10 +44,6 @@ const Invitations: React.FC<IInvitationsProps> = ({ show, toggleShow }) => {
   }, [extendedIndex])
 
   useEffect(() => {
-    console.log(gameIntivations)
-  }, [gameIntivations])
-
-  useEffect(() => {
     if (socket.hasListeners('GAME_INVITE')) {
       socket.removeAllListeners('GAME_INVITE')
     }
@@ -59,7 +51,7 @@ const Invitations: React.FC<IInvitationsProps> = ({ show, toggleShow }) => {
       setGameInvitations(prevState => {
         const check = prevState.find(inv => inv.senderUsername === senderUsername)
         if (check) return prevState
-        const update = JSON.parse(JSON.stringify(prevState)) as IInvitationItem[]
+        const update = structuredClone(prevState) as IInvitationItem[]
         let addIndex = gameIntivations.length
         if (gameIntivations.at(-1)?.senderId === 'mockInvitation') addIndex = gameIntivations.length - 1
         update.splice(addIndex, 0, { gameName, senderId, senderUsername })
@@ -71,7 +63,6 @@ const Invitations: React.FC<IInvitationsProps> = ({ show, toggleShow }) => {
 
   return <div className={`invitations ${show ? 'show' : ''}`}>
     <div className="header">
-      <button onClick={test}>test</button>
       <div className='clearAll' onClick={clearInvitations}>Clear all</div>
       <div className="exitCross" onClick={toggleShow}>
         <div className="line1"></div>
@@ -81,7 +72,6 @@ const Invitations: React.FC<IInvitationsProps> = ({ show, toggleShow }) => {
     <div className="list">
       {gameIntivations.map((inv, index) => {
         if (inv.senderId === 'mockInvitation') return <div className="mockInvitation"></div>
-        if (index === 0) console.log(index === extendedIndex)
         let indented = false
         let extended = false
         if (extendedIndex === index) extended = true

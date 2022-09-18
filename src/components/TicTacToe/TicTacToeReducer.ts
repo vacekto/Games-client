@@ -1,6 +1,6 @@
-import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from 'src/util/gameLogic'
-import { initializeTicTacToeBoard } from 'src/util/functions'
-import { TTicTacToeBoard, TTicTacToeSide, TMode } from 'shared/types'
+import { checkForWinnerTicTacToe, checkForDrawTicTacToe } from 'src/util/ticTacToeLogic'
+import { initializeTicTacToeBoard } from 'src/util/ticTacToeLogic'
+import { TTicTacToeBoard, TTicTacToeSide, TGameMode } from 'shared/types'
 
 interface TTicTacToeState {
     board: TTicTacToeBoard
@@ -8,7 +8,7 @@ interface TTicTacToeState {
     opponentUsername: string
     currentlyPlaying: TTicTacToeSide
     winner: 'X' | 'O' | null | 'draw'
-    mode: TMode
+    mode: TGameMode
     score: {
         X: number
         O: number
@@ -24,10 +24,10 @@ export type TTicTacToeAction =
 
 
 const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
-    let update: TTicTacToeState;
+    let update = { ...prevState }
     switch (action.type) {
         case 'HOTSEAT_MOVE':
-            update = JSON.parse(JSON.stringify(prevState))
+            console.log('test')
             const [x, y] = action.payload.COORD
             update.board[x][y] = prevState.currentlyPlaying
             if (checkForDrawTicTacToe(update.board)) {
@@ -43,25 +43,22 @@ const reducer = (prevState: TTicTacToeState, action: TTicTacToeAction) => {
             return update
 
         case 'MULTIPLAYER_MOVE':
-            update = JSON.parse(JSON.stringify(prevState))
             update.board = action.payload
             update.currentlyPlaying = (prevState.currentlyPlaying === "X" ? 'O' : 'X')
             return update
 
         case 'PLAYER_WON_GAME':
-            update = JSON.parse(JSON.stringify(prevState))
             update.winner = action.payload
             update.score[action.payload] += 1
             return update
 
         case 'NEW_GAME':
-            update = JSON.parse(JSON.stringify(prevState))
             update.board = initializeTicTacToeBoard(prevState.board.length)
             update.winner = null
             return update
 
         default:
-            return { ...prevState }
+            return prevState
     }
 }
 

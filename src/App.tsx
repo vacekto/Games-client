@@ -1,17 +1,19 @@
 import './App.scss';
 import './util/CSS/classes.scss'
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { IUser } from 'shared/types';
 import Main from './components/Main';
 import TicTacToeOptions from './components/TicTacToe/TicTacToeOptions'
 import TicTacToeBoard from './components/TicTacToe/TicTacToeBoard';
-import UltimateTicTacToeOptions from './components/ultimateTicTacToe/UltimateTicTacToeOptions';
-import UltimateTicTacToeBoard from './components/ultimateTicTacToe/UltimateTicTacToeBoard';
+import UltimateTicTacToeOptions from './components/UltimateTicTacToe/UltimateTicTacToeOptions';
+import UltimateTicTacToeBoard from './components/UltimateTicTacToe/UltimateTicTacToeBoard';
 import UsernameModal from './components/UsernameModal';
-import CustomSwitch from './components/CustomSwitch';
+import ChessOptions from './components/Chess/ChessOptions';
 import Invitations from './components/Invitations'
+import ChessBoard from './components/Chess/ChessBoard';
 import socket from 'src/util/socketInstance'
+
 
 
 function App() {
@@ -20,12 +22,20 @@ function App() {
   const [displayUsernameModal, setDisplayUsernameModal] = useState<boolean>(!Boolean(localStorage.getItem('username')))
   const [displayInvitations, setDisplayInvitations] = useState<boolean>(false)
   const [lobby, setLobby] = useState<IUser[]>([])
+  const [displaySmallerLobby, setDisplaySmallerLobby] = useState<boolean>(false)
+  const location = useLocation();
 
+  const toggleLobby = () => setDisplaySmallerLobby(!displaySmallerLobby)
   const toggleInvitations = () => setDisplayInvitations(!displayInvitations)
   const toggleUsernameModal = () => setDisplayUsernameModal(!displayUsernameModal)
   const handleSubmitUsername = (newUsername: string, remember: boolean) => {
     setUsername(newUsername)
     if (remember) localStorage.setItem('username', newUsername)
+  }
+
+  const test = () => {
+
+    socket.emit('test', Infinity)
   }
 
   useEffect(() => {
@@ -53,16 +63,15 @@ function App() {
 
     if (!socket.hasListeners('LOBBY_UPDATE')) {
       socket.on('LOBBY_UPDATE', (lobby) => {
-
-        console.log('lobby update ' + lobby)
         setLobby(lobby)
       })
     }
 
-    socket.on('test', () => {
-      console.log('testing')
+    socket.on('test', (arg) => {
+
     })
     socket.emit('JOIN_LOBBY')
+
   }, [])
 
   useEffect(() => {
@@ -78,7 +87,14 @@ function App() {
 
       <div className='appHeader'>
         <div className="left">
-          <div className='menu' onClick={toggleInvitations}>Game invitations</div>
+          <button onClick={test}>test</button>
+          <div className='inv' onClick={toggleInvitations}>Game invitations</div>
+        </div>
+        <div className='middle' style={{ display: location.pathname === '/' ? 'none' : 'inline-block' }}>
+          <button></button>
+          <div onClick={toggleLobby}>
+            Lobby
+          </div>
         </div>
         <div className="right">
           <div
@@ -93,20 +109,19 @@ function App() {
       </div>
 
       <Routes>
-        <Route path='/TicTacToe' element={<TicTacToeOptions lobbyUsers={lobby} username={username!} />} >
+        <Route path='/TicTacToe' element={<TicTacToeOptions lobbyUsers={lobby} username={username!} displaySmallerLobby={displaySmallerLobby} />} >
           <Route path='hotseat' element={<TicTacToeBoard mode={'hotseat'} username={username!} />} />
           <Route path='multiplayer/:gameId/:side/:opponentUsername' element={<TicTacToeBoard mode={'multiplayer'} username={username!} />} />
         </Route>
-        <Route path="/UltimateTicTacToe/" element={<UltimateTicTacToeOptions lobbyUsers={lobby} username={username!} />} >
+        <Route path="/UltimateTicTacToe/" element={<UltimateTicTacToeOptions lobbyUsers={lobby} username={username!} displaySmallerLobby={displaySmallerLobby} />} >
           <Route path="hotseat" element={<UltimateTicTacToeBoard mode={'hotseat'} username={username!} />} />
           <Route path="multiplayer/:gameId/:side/:opponentUsername" element={<UltimateTicTacToeBoard mode={'multiplayer'} username={username!} />} />
         </Route>
-        <Route path="/Chess" element={<CustomSwitch moving='X' />} >
-          <Route path='Board' element={<CustomSwitch moving='O' />} />
+        <Route path="/Chess" element={<ChessOptions lobbyUsers={lobby} username={username!} displaySmallerLobby={displaySmallerLobby} />} >
+          <Route path="hotseat" element={<ChessBoard mode={'hotseat'} username={username!} />} />
         </Route>
         <Route path='*' element={<Main />} />
       </Routes>
-
       <UsernameModal show={displayUsernameModal} exitModal={toggleUsernameModal} submit={handleSubmitUsername} />
 
     </div >

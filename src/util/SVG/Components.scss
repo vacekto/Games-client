@@ -1,0 +1,38 @@
+.svgContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .chessPiece {
+        box-sizing: border-box;
+        padding-top: 12px;
+    }
+
+    .svgIcon {
+        width: 100%;
+        height: 100%;
+    }
+
+    .scales {
+        width: 26px;
+        height: 26px;
+        padding: 7px;
+        color: red;
+    }
+
+}
+
+.large {
+    width: 100%;
+    height: 100%;
+}
+
+.average {
+    width: 80%;
+    height: 80%;
+}
+
+.small {
+    width: 70%;
+    height: 70%;
+}

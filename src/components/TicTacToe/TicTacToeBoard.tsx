@@ -1,23 +1,23 @@
 import './TicTacToeBoard.scss'
 import { useReducer, useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { TMode, TTicTacToeBoard } from 'shared/types'
-import { initializeTicTacToeBoard } from 'src/util/functions'
-import reducer from './TicTacToeReducer'
+import { TGameMode, TTicTacToeBoard, TTicTacToeSide } from 'shared/types'
+import { initializeTicTacToeBoard } from 'src/util/ticTacToeLogic'
+import reducer from './ticTacToeReducer'
 import BoardHeader from '../BoardHeader'
 import BoardFooter from '../BoardFooter'
-import { Circle, Times } from 'src/util/SVG'
+import { Circle, Times } from 'src/util/SVG/Components'
 import socket from 'src/util/socketInstance'
 interface ITicTacToeBoardProps {
   size?: number
   username: string
-  mode: TMode
+  mode: TGameMode
 }
 
 const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, username }) => {
   const params = useParams();
   const navigate = useNavigate();
-  const [oponentsWantsRematch, setOpponentWantsRematch] = useState<boolean>(false)
+  const [opponentWantsRematch, setOpponentWantsRematch] = useState<boolean>(false)
   const [state, dispatch] = useReducer(reducer, {
     board: initializeTicTacToeBoard(size),
     side: mode === 'multiplayer' ? params.side === 'X' ? 'X' : 'O' : 'X',
@@ -72,7 +72,7 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
       }
       if (!socket.hasListeners('PLAYER_WON_GAME')) {
         socket.on('PLAYER_WON_GAME', (side) => {
-          dispatch({ type: 'PLAYER_WON_GAME', payload: side })
+          dispatch({ type: 'PLAYER_WON_GAME', payload: side as (TTicTacToeSide | 'draw') })
         })
       }
       if (!socket.hasListeners('NEW_GAME')) {
@@ -111,8 +111,8 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
   }, [])
 
   const renderBoardValue = (value: 'X' | 'O' | null | 'draw') => {
-    if (value === 'X') return <Times />
-    if (value === 'O') return <Circle />
+    if (value === 'X') return Times
+    if (value === 'O') return Circle
     return null
   }
 
@@ -123,27 +123,29 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
       <div className="header">
         <BoardHeader
           clientSide={state.side}
-          score={{ ...state.score }}
+          score={structuredClone(state.score)}
           opponentUsername={params.opponentUsername}
           clientUsername={username}
           mode={mode}
         />
       </div>
 
-      <div className="board genericFlexColumn genericNoBorder">
-        {state.board.map((row: Array<"X" | "O" | null | 'draw'>, x: number) => {
-          return <div className="flex" key={x}>
-            {row.map((value: "X" | "O" | null | 'draw', y: number) => {
-              return <div
-                key={y}
-                className='genericTicTacToeSquare'
-                onClick={() => { handleSquareClick(x, y) }}
-              >
-                {renderBoardValue(value)}
-              </div>
-            })}
-          </div>
-        })}
+      <div className="board ">
+        <div className="genericFlexColumn genericNoBorder">
+          {state.board.map((row, x) => {
+            return <div className="flex" key={x}>
+              {row.map((value, y) => {
+                return <div
+                  key={y}
+                  className='genericTicTacToeSquare'
+                  onClick={() => { handleSquareClick(x, y) }}
+                >
+                  {renderBoardValue(value)}
+                </div>
+              })}
+            </div>
+          })}
+        </div>
       </div>
 
       <div className='footer'>
@@ -152,7 +154,8 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
           winner={state.winner}
           playAgainCallback={handlePlayAgain}
           quitCallback={handleQuit}
-          oponentsWantsRematch={oponentsWantsRematch}
+          oponentsWantsRematch={opponentWantsRematch}
+          gameName='ticTacToe'
         />
       </div>
     </div>

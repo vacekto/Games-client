@@ -16,7 +16,8 @@ const InvitationItem: React.FC<IInvitationItemProps> = ({ item, deleteItem, inde
 
     const gameName = {
         ticTacToe: 'Tic Tac Toe',
-        ultimateTicTacToe: 'Ultimate Tic Tac Toe'
+        ultimateTicTacToe: 'Ultimate Tic Tac Toe',
+        chess: 'Chess'
     }
 
     let messageOptions = {

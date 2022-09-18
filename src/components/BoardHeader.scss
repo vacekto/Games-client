@@ -1,10 +1,12 @@
 @import '../util/CSS/variables.scss';
 
 .boardHeader {
+
     .sides {
         display: flex;
         justify-content: space-between;
         margin-bottom: 10px;
+
         .side {
             display: flex;
 
@@ -30,9 +32,8 @@
             align-items: center;
 
             .svgContainer {
-                width: 20px;
-                height: 20px;
-                margin-bottom: 10px;
+                width: 40px;
+                height: 40px;
             }
         }
 
@@ -44,7 +45,7 @@
             color: $TICTACTOE_CIRCLE_COLOR;
         }
 
-        .draws {
+        .scales {
             color: #A9A9A9;
         }
 

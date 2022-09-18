@@ -1,16 +1,16 @@
 import './UltimateTicTacToeBoard.scss'
-import { TMode, TTicTacToeBoard, TUltimateTiTacTocBoard } from 'shared/types'
-import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/functions'
+import { TGameMode, TTicTacToeBoard, TTicTacToeSide, TUltimateTiTacTocBoard } from 'shared/types'
+import { initializeUltimateTicTacToeBoard, initializeTicTacToeBoard } from '../../util/ticTacToeLogic'
 import { useReducer, useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import reducer from './UltimateTicTacToeReducer'
+import reducer from './ultimateTicTacToeReducer'
 import BoardHeader from '../BoardHeader'
 import BoardFooter from '../BoardFooter'
-import { Times, Circle } from '../../util/SVG'
+import { Times, Circle } from 'src/util/SVG/Components'
 import socket from 'src/util/socketInstance'
 
 interface IUltimateTicTacToeBoardProps {
-    mode: TMode
+    mode: TGameMode
     username: string
 }
 
@@ -37,6 +37,9 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, 
     const handlePlayAgain = () => {
         if (mode === 'multiplayer') {
             socket.emit('PLAY_AGAIN')
+        }
+        else if (mode === 'hotseat') {
+            dispatch({ type: 'NEW_GAME' })
         }
     }
 
@@ -89,7 +92,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, 
         }
         if (!socket.hasListeners('PLAYER_WON_GAME')) {
             socket.on('PLAYER_WON_GAME', (side) => {
-                dispatch({ type: 'PLAYER_WON_GAME', payload: { side } })
+                dispatch({ type: 'PLAYER_WON_GAME', payload: side as (TTicTacToeSide | 'draw') })
             })
         }
         if (!socket.hasListeners('NEW_GAME')) {
@@ -133,8 +136,8 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, 
     }
 
     const renderIcon = (value: 'X' | 'O' | null | 'draw') => {
-        if (value === 'X') return <Times />
-        if (value === 'O') return <Circle />
+        if (value === 'X') return Times
+        if (value === 'O') return Circle 
         return null
     }
 
@@ -178,7 +181,12 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, 
     return <div className='ultimateTicTacToeBoard genericWholeScrean'>
         <div className='genericGameContainer'>
             <div className="header">
-                <BoardHeader clientSide={state.side} clientUsername={username} opponentUsername={params.opponentUsername!} score={{ ...state.score }} mode={mode} />
+                <BoardHeader
+                    clientSide={state.side}
+                    clientUsername={username}
+                    opponentUsername={params.opponentUsername!}
+                    score={{ ...state.score }}
+                    mode={mode} />
             </div>
             <div className="board genericFlexColumn">
                 {renderSegmentBoard()}
@@ -190,6 +198,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, 
                     playAgainCallback={handlePlayAgain}
                     quitCallback={handleQuit}
                     oponentsWantsRematch={oponentsWantsRematch}
+                    gameName='ultimateTicTacToe'
                 />
             </div>
         </div>
