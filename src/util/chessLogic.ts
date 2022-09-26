@@ -60,7 +60,7 @@ const getKingCOORD = ((board, side) => {
 }) as (board: TChessBoard, side: TChessSide) => [number, number]
 
 
-export const isCheck = (board: TChessBoard, side: TChessSide) => {
+export const isInCheck = (board: TChessBoard, side: TChessSide) => {
     const kingCOORD = getKingCOORD(board, side)
     return isPositionEndangered(board, side, kingCOORD)
 }
@@ -70,14 +70,9 @@ export const isPositionEndangered = (board: TChessBoard, side: TChessSide, COORD
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (board[i][j] !== null && board[i][j]!.side !== side) {
-                try {
-                    const potentialMoves = board[i][j]!.getPotencialMoves(board)
-                    for (let move of potentialMoves) {
-                        if (move[0] === x && move[1] === y) return true
-                    }
-                }
-                catch (err) {
-                    debugger
+                const potentialMoves = board[i][j]!.getPotencialMoves(board)
+                for (let move of potentialMoves) {
+                    if (move[0] === x && move[1] === y) return true
                 }
             }
         }
@@ -134,8 +129,8 @@ export const movePiece = (board: TChessBoard, from: [number, number], to: [numbe
 
 }
 
-export const isDraw = (board: TChessBoard, side: TChessSide) => {
-    if (isCheck(board, side)) return false
+export const checkForDrawChess = (board: TChessBoard, side: TChessSide) => {
+    if (isInCheck(board, side)) return false
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (board[i][j] !== null && board[i][j]!.side === side) {
@@ -146,7 +141,6 @@ export const isDraw = (board: TChessBoard, side: TChessSide) => {
             }
         }
     }
-    console.log('DRRAW')
     return true
 }
 
@@ -154,12 +148,12 @@ export const isMovePossible = (board: TChessBoard, from: [number, number], to: [
     const mockBoard = structuredClone(board)
     restoreChessPrototypes(mockBoard)
     movePiece(mockBoard, from, to)
-    if (isCheck(mockBoard, side)) return false
+    if (isInCheck(mockBoard, side)) return false
     return true
 }
 
 export const isCheckMate = (board: TChessBoard, side: TChessSide) => {
-    if (!isCheck(board, side)) return false
+    if (!isInCheck(board, side)) return false
     for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
             if (board[i][j] !== null) {
@@ -170,7 +164,7 @@ export const isCheckMate = (board: TChessBoard, side: TChessSide) => {
                         const mockBoard = structuredClone(board)
                         restoreChessPrototypes(mockBoard)
                         movePiece(mockBoard, piece!.boardCOORD, move)
-                        if (!isCheck(mockBoard, side)) return false
+                        if (!isInCheck(mockBoard, side)) return false
                     }
                 }
             }

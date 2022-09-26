@@ -119,6 +119,7 @@ function App() {
         </Route>
         <Route path="/Chess" element={<ChessOptions lobbyUsers={lobby} username={username!} displaySmallerLobby={displaySmallerLobby} />} >
           <Route path="hotseat" element={<ChessBoard mode={'hotseat'} username={username!} />} />
+          <Route path="multiplayer/:gameId/:side/:opponentUsername" element={<ChessBoard mode={'multiplayer'} username={username!} />} />
         </Route>
         <Route path='*' element={<Main />} />
       </Routes>

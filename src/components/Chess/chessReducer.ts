@@ -1,6 +1,6 @@
 import { TTicTacToeBoard, TTicTacToeSide, TGameMode, TChessBoard, TChessSide } from 'shared/types'
 import * as chessPieces from 'src/util/chessPieces'
-import { isCheck, isCheckMate, movePiece, isMovePossible, isDraw, restoreChessPrototypes, createChessBoard } from 'src/util/chessLogic'
+import { isInCheck, isCheckMate, movePiece, isMovePossible, checkForDrawChess, restoreChessPrototypes, createChessBoard } from 'src/util/chessLogic'
 
 interface TChessState {
     board: TChessBoard
@@ -27,8 +27,8 @@ interface TChessState {
 
 export type TChessAction =
     { type: 'HOTSEAT_MOVE'; payload: [number, number] }
-    | { type: 'MULTIPLAYER_MOVE', payload: TTicTacToeBoard }
-    | { type: 'PLAYER_WON_GAME', payload: TTicTacToeSide | 'draw' }
+    | { type: 'MULTIPLAYER_MOVE', payload: { board: TChessBoard, check: TChessSide | null } }
+    | { type: 'PLAYER_WON_GAME', payload: TChessSide | 'draw' }
     | { type: 'NEW_GAME' }
     | { type: 'SELECT', payload: [number, number] }
     | { type: 'TEST' }
@@ -37,13 +37,6 @@ export type TChessAction =
 
 const reducer = (prevState: TChessState, action: TChessAction) => {
     let update = { ...prevState }
-    /*
-    let update = structuredClone(prevState) as TChessState
-    restoreChessPrototypes(update.board)
-    if (update.selected) {
-        const [k, l] = update.selected!.boardCOORD
-        update.selected = update.board[k][l]
-    }*/
 
     switch (action.type) {
         case 'SELECT':
@@ -79,14 +72,14 @@ const reducer = (prevState: TChessState, action: TChessAction) => {
             update.potentialMoves = []
             const opponentSide: TChessSide = prevState.currentlyPlaying === 'black' ? 'white' : 'black'
             let winner = null as ('white' | 'black' | null | 'draw')
-            if (isCheck(update.board, opponentSide)) {
+            if (isInCheck(update.board, opponentSide)) {
                 update.check = opponentSide
                 if (isCheckMate(update.board, opponentSide)) {
                     console.log('checkMate')
                     winner = update.side
                 }
             }
-            else if (isDraw(update.board, opponentSide)) {
+            else if (checkForDrawChess(update.board, opponentSide)) {
                 winner = 'draw'
             }
             if (winner) {
@@ -98,10 +91,18 @@ const reducer = (prevState: TChessState, action: TChessAction) => {
             return update
 
         case 'MULTIPLAYER_MOVE':
-
+            const { board, check } = action.payload
+            update.board = board
+            restoreChessPrototypes(update.board)
+            update.check = check
+            update.selected = null
+            update.potentialMoves = []
+            update.currentlyPlaying = update.currentlyPlaying === 'black' ? 'white' : 'black'
             return update
 
         case 'PLAYER_WON_GAME':
+            update.winner = action.payload
+            update.score[action.payload] += 1
             return update
 
         case 'NEW_GAME':

@@ -117,7 +117,7 @@ const TicTacToeBoard: React.FC<ITicTacToeBoardProps> = ({ size = 9, mode, userna
   }
 
 
-  return <div className='ticTacToeBoard genericWholeScrean'>
+  return <div className='ticTacToeBoard genericWholeScreen'>
     <div className="genericGameContainer">
 
       <div className="header">

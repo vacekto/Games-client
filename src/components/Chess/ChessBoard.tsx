@@ -1,13 +1,14 @@
 import './ChessBoard.scss'
-import { TChessBoard, TGameMode } from 'shared/types'
+import { TChessBoard, TChessSide, TGameMode } from 'shared/types'
 import { useReducer, useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import BoardHeader from '../BoardHeader';
 import BoardFooter from '../BoardFooter';
 import { chessPiecesSVG } from 'src/util/SVG/Components';
 import { ChessPiece } from 'src/util/chessPieces';
-import { createChessBoard } from 'src/util/chessLogic';
+import { createChessBoard, isMovePossible } from 'src/util/chessLogic';
 import reducer from './chessReducer'
+import socket from 'src/util/socketInstance';
 
 interface IChessBoardProps {
   mode: TGameMode
@@ -15,6 +16,7 @@ interface IChessBoardProps {
 }
 
 const ChessBoard: React.FC<IChessBoardProps> = ({ mode, username }) => {
+  const params = useParams();
   const navigate = useNavigate()
   const [oponentWantsRematch, setOpponentWantsRematch] = useState<boolean>(false)
   const [state, dispatch] = useReducer(reducer, {
@@ -23,9 +25,9 @@ const ChessBoard: React.FC<IChessBoardProps> = ({ mode, username }) => {
     potentialMoves: [],
     enPassant: [],
     check: null,
-    side: 'white',
+    side: mode === 'multiplayer' ? params.side === 'white' ? 'white' : 'black' : 'white',
     history: [],
-    opponentUsername: '',
+    opponentUsername: params.opponentUsername ? params.opponentUsername : '',
     currentlyPlaying: 'white',
     winner: null,
     mode: mode,
@@ -43,7 +45,11 @@ const ChessBoard: React.FC<IChessBoardProps> = ({ mode, username }) => {
     const [x, y] = COORD
     if (state.selected) {
       const potentialMove = state.potentialMoves!.find(m => (m[0] === x && m[1] === y))
-      if (potentialMove) { dispatch({ type: 'HOTSEAT_MOVE', payload: COORD }); return }
+      if (potentialMove) {
+        if (mode === 'hotseat') { dispatch({ type: 'HOTSEAT_MOVE', payload: COORD }); return }
+        if (!isMovePossible(state.board, state.selected!.boardCOORD, COORD, state.currentlyPlaying)) return
+        socket.emit('CLIENT_GAME_UPDATE', COORD, state.side, state.selected)
+      }
     }
     if (state.board[x][y] === null || state.currentlyPlaying === state.board[x][y]!.side) dispatch({ type: 'SELECT', payload: COORD })
   }
@@ -71,13 +77,55 @@ const ChessBoard: React.FC<IChessBoardProps> = ({ mode, username }) => {
   }
 
   useEffect(() => {
-    dispatch({ type: 'TEST' })
+    if (mode === 'multiplayer') {
+      if (!params.side || !['white', 'black'].includes(params.side)) navigate('/')
+      if (!socket.gameId || socket.gameId !== params.gameId) navigate('/')
+      if (!username || !params.opponentUsername) navigate('/')
+
+      if (!socket.hasListeners('SERVER_GAME_UPDATE')) {
+        socket.on('SERVER_GAME_UPDATE', (board, _, __, check) => {
+          dispatch({ type: 'MULTIPLAYER_MOVE', payload: { board: board as TChessBoard, check: check! } })
+        })
+      }
+      if (!socket.hasListeners('PLAYER_WON_GAME')) {
+        socket.on('PLAYER_WON_GAME', (side) => {
+          dispatch({ type: 'PLAYER_WON_GAME', payload: side as (TChessSide | 'draw') })
+        })
+      }
+      if (!socket.hasListeners('NEW_GAME')) {
+        socket.on('NEW_GAME', () => {
+          dispatch({ type: 'NEW_GAME' })
+          setOpponentWantsRematch(false)
+        })
+      }
+      if (!socket.hasListeners('QUIT_GAME')) {
+        socket.on('QUIT_GAME', (msg) => {
+          console.error(msg)
+          navigate('/')
+        })
+      }
+
+      if (!socket.hasListeners('OPONENT_WANTS_TO_PLAY_AGAIN')) {
+        socket.on('OPONENT_WANTS_TO_PLAY_AGAIN', () => {
+          setOpponentWantsRematch(true)
+        })
+      }
+    }
+
+    socket.emit('LEAVE_LOBBY')
+
+    return () => {
+      socket.emit('LEAVE_GAME')
+      socket.removeAllListeners('SERVER_GAME_UPDATE')
+      socket.removeAllListeners('PLAYER_WON_GAME')
+      socket.removeAllListeners('NEW_GAME')
+      socket.removeAllListeners('QUIT_GAME')
+      socket.removeAllListeners('OPONENT_WANTS_TO_PLAY_AGAIN')
+      socket.gameId = null
+      socket.emit('JOIN_LOBBY')
+    }
 
   }, [])
-
-  useEffect(() => {
-    console.log(state.check)
-  }, [state.check])
 
 
   const getSquareValue = (value: ChessPiece | null) => {
@@ -86,7 +134,7 @@ const ChessBoard: React.FC<IChessBoardProps> = ({ mode, username }) => {
     return chessPiecesSVG[value.iconName]
   }
 
-  return <div className='chessBoard genericWholeScrean'>
+  return <div className='chessBoard genericWholeScreen'>
     <div className="genericGameContainer">
       <div className="header">
         <BoardHeader

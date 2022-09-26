@@ -51,7 +51,7 @@ const UsernameModal: React.FC<IUsernameModalProps> = ({ submit, exitModal, show 
   }, [])
 
   return (
-    <div className='usernameModal genericWholeScrean' style={{ display: show ? 'flex' : 'none' }} onClick={exitModal}>
+    <div className='usernameModal genericWholeScreen' style={{ display: show ? 'flex' : 'none' }} onClick={exitModal}>
       <div className="formContainer" onClick={(e) => { e.stopPropagation() }}>
         <div className='enterUsername'>
           Enter username:

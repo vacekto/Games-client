@@ -21,8 +21,8 @@ const ChessOptions: React.FC<IChessOptionsProps> = ({ lobbyUsers, username, disp
         vsPC: () => { },
         back: () => { navigate("../") },
         search: () => {
-            if (searching) socket.emit('CANCEL_SEARCH_FOR_OPPONENT', 'ultimateTicTacToe')
-            else socket.emit('SEARCH_FOR_OPPONENT', 'ultimateTicTacToe')
+            if (searching) socket.emit('CANCEL_SEARCH_FOR_OPPONENT', 'chess')
+            else socket.emit('SEARCH_FOR_OPPONENT', 'chess')
             setSearching(prevState => !prevState)
         }
     }

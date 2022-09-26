@@ -178,7 +178,7 @@ const UltimateTicTacToeBoard: React.FC<IUltimateTicTacToeBoardProps> = ({ mode, 
     }
 
 
-    return <div className='ultimateTicTacToeBoard genericWholeScrean'>
+    return <div className='ultimateTicTacToeBoard genericWholeScreen'>
         <div className='genericGameContainer'>
             <div className="header">
                 <BoardHeader
